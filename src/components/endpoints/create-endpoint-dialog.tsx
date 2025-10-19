@@ -17,6 +17,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { JsonEditor } from "@/components/ui/json-editor";
+import { DelayInput } from "@/components/ui/delay-input";
 import {
   Select,
   SelectContent,
@@ -192,20 +193,11 @@ export function CreateEndpointDialog({ open, onOpenChange }: CreateEndpointDialo
             </div>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="delayMs">Delay (ms)</Label>
-            <Input
-              id="delayMs"
-              type="number"
-              min="0"
-              max="10000"
-              placeholder="0"
-              {...register("delayMs", { valueAsNumber: true })}
-            />
-            {errors.delayMs && (
-              <p className="text-sm text-destructive">{errors.delayMs.message}</p>
-            )}
-          </div>
+          <DelayInput
+            value={watch("delayMs") || 0}
+            onChange={(value) => setValue("delayMs", value)}
+            error={errors.delayMs?.message}
+          />
 
           <div className="space-y-2">
             <Label htmlFor="responseData">Response Data *</Label>
