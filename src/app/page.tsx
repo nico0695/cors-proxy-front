@@ -45,15 +45,12 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-8">
-        <div className="space-y-8">
-          <section>
-            <h2 className="text-xl font-semibold mb-4">Overview</h2>
-            <EndpointStats />
-          </section>
+      <div className="container mx-auto px-4 py-6">
+        <div className="space-y-6">
+          <EndpointStats />
 
           <section>
-            <h2 className="text-xl font-semibold mb-4">Endpoints</h2>
+            <h2 className="text-lg font-semibold mb-4">Endpoints</h2>
             <EndpointList />
           </section>
         </div>
