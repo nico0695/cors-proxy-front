@@ -31,7 +31,8 @@ export function EndpointDetailsDialog({
     alert("Copied to clipboard!");
   };
 
-  const fullUrl = `http://localhost:8080/api-mock/serve${endpoint.path}`;
+  const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
+  const fullUrl = `${apiBaseUrl}/api-mock/serve${endpoint.path}`;
 
   const formatResponseData = () => {
     if (endpoint.contentType === "application/json") {

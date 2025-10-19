@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
+import { JsonEditor } from "@/components/ui/json-editor";
 import {
   Select,
   SelectContent,
@@ -208,25 +209,25 @@ export function CreateEndpointDialog({ open, onOpenChange }: CreateEndpointDialo
 
           <div className="space-y-2">
             <Label htmlFor="responseData">Response Data *</Label>
-            <Textarea
-              id="responseData"
-              placeholder={
-                contentType === "application/json"
-                  ? '{"message": "Hello World"}'
-                  : "Your response data here"
-              }
-              rows={8}
-              className="font-mono text-sm"
-              {...register("responseData")}
-            />
+            {contentType === "application/json" ? (
+              <JsonEditor
+                value={watch("responseData")}
+                onChange={(value) => setValue("responseData", value)}
+                placeholder='{"message": "Hello World"}'
+                minHeight="300px"
+              />
+            ) : (
+              <Textarea
+                id="responseData"
+                placeholder="Your response data here"
+                rows={8}
+                className="font-mono text-sm"
+                {...register("responseData")}
+              />
+            )}
             {errors.responseData && (
               <p className="text-sm text-destructive">
                 {errors.responseData.message}
-              </p>
-            )}
-            {contentType === "application/json" && (
-              <p className="text-xs text-muted-foreground">
-                Must be valid JSON
               </p>
             )}
           </div>
