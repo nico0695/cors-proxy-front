@@ -10,9 +10,10 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Clock, Code, Power, PowerOff, Edit, Copy, ExternalLink } from "lucide-react";
-import { useUpdateEndpoint } from "@/hooks/use-endpoints";
+import { Clock, Code, Power, PowerOff, Edit, Copy, ExternalLink, Trash2 } from "lucide-react";
+import { useUpdateEndpoint, useDeleteEndpoint } from "@/hooks/use-endpoints";
 import { useState } from "react";
+import toast from "react-hot-toast";
 
 interface EndpointCardProps {
   endpoint: MockEndpoint;
@@ -22,25 +23,51 @@ interface EndpointCardProps {
 
 export function EndpointCard({ endpoint, onViewDetails, onEdit }: EndpointCardProps) {
   const updateMutation = useUpdateEndpoint();
+  const deleteMutation = useDeleteEndpoint();
   const [copied, setCopied] = useState(false);
 
   const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
   const fullUrl = `${apiBaseUrl}/api-mock/serve${endpoint.path}`;
 
   const toggleEnabled = () => {
-    updateMutation.mutate({
-      id: endpoint.id,
-      data: { enabled: !endpoint.enabled },
-    });
+    updateMutation.mutate(
+      {
+        id: endpoint.id,
+        data: { enabled: !endpoint.enabled },
+      },
+      {
+        onSuccess: () => {
+          toast.success(`Endpoint ${!endpoint.enabled ? "enabled" : "disabled"} successfully`);
+        },
+        onError: () => {
+          toast.error("Failed to update endpoint status");
+        },
+      }
+    );
+  };
+
+  const handleDelete = () => {
+    if (confirm(`Are you sure you want to delete "${endpoint.name}"?`)) {
+      deleteMutation.mutate(endpoint.id, {
+        onSuccess: () => {
+          toast.success("Endpoint deleted successfully");
+        },
+        onError: () => {
+          toast.error("Failed to delete endpoint");
+        },
+      });
+    }
   };
 
   const copyUrl = async () => {
     try {
       await navigator.clipboard.writeText(fullUrl);
       setCopied(true);
+      toast.success("URL copied to clipboard");
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
       console.error("Failed to copy:", err);
+      toast.error("Failed to copy URL");
     }
   };
 
@@ -142,6 +169,16 @@ export function EndpointCard({ endpoint, onViewDetails, onEdit }: EndpointCardPr
           onClick={() => onViewDetails?.(endpoint)}
         >
           Details
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          className="h-7 text-xs px-2 hover:bg-red-50 hover:text-red-600 hover:border-red-300"
+          onClick={handleDelete}
+          disabled={deleteMutation.isPending}
+          title="Delete endpoint"
+        >
+          <Trash2 className="h-3 w-3" />
         </Button>
       </CardFooter>
     </Card>

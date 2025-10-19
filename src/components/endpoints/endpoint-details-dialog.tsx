@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Copy, ExternalLink, Edit } from "lucide-react";
 import { format } from "date-fns";
+import toast from "react-hot-toast";
 
 interface EndpointDetailsDialogProps {
   endpoint: MockEndpoint | null;
@@ -28,9 +29,14 @@ export function EndpointDetailsDialog({
 }: EndpointDetailsDialogProps) {
   if (!endpoint) return null;
 
-  const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text);
-    alert("Copied to clipboard!");
+  const copyToClipboard = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      toast.success("Copied to clipboard");
+    } catch (err) {
+      console.error("Failed to copy:", err);
+      toast.error("Failed to copy to clipboard");
+    }
   };
 
   const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";

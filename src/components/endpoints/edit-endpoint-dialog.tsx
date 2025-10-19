@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import toast from "react-hot-toast";
 import {
   Dialog,
   DialogContent,
@@ -113,7 +114,7 @@ export function EditEndpointDialog({
         try {
           parsedResponseData = JSON.parse(data.responseData);
         } catch (e) {
-          alert("Invalid JSON in response data");
+          toast.error("Invalid JSON in response data");
           return;
         }
       }
@@ -134,10 +135,11 @@ export function EditEndpointDialog({
         data: updateData,
       });
 
+      toast.success("Endpoint updated successfully");
       onOpenChange(false);
     } catch (error) {
       console.error("Failed to update endpoint:", error);
-      alert("Failed to update endpoint. Please try again.");
+      toast.error("Failed to update endpoint. Please try again.");
     }
   };
 

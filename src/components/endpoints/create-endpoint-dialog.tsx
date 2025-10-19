@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import toast from "react-hot-toast";
 import {
   Dialog,
   DialogContent,
@@ -87,7 +88,7 @@ export function CreateEndpointDialog({ open, onOpenChange }: CreateEndpointDialo
         try {
           parsedResponseData = JSON.parse(data.responseData);
         } catch (e) {
-          alert("Invalid JSON in response data");
+          toast.error("Invalid JSON in response data");
           return;
         }
       }
@@ -97,11 +98,12 @@ export function CreateEndpointDialog({ open, onOpenChange }: CreateEndpointDialo
         responseData: parsedResponseData,
       });
 
+      toast.success("Endpoint created successfully");
       reset();
       onOpenChange(false);
     } catch (error) {
       console.error("Failed to create endpoint:", error);
-      alert("Failed to create endpoint. Please try again.");
+      toast.error("Failed to create endpoint. Please try again.");
     }
   };
 
