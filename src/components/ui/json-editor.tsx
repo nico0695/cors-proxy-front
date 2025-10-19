@@ -6,8 +6,23 @@ import { highlight, languages } from "prismjs";
 import "prismjs/components/prism-json";
 import "prismjs/themes/prism-tomorrow.css";
 import { Button } from "@/components/ui/button";
-import { Maximize2, Minimize2, AlertCircle, CheckCircle2 } from "lucide-react";
+import {
+  Maximize2,
+  Minimize2,
+  AlertCircle,
+  CheckCircle2,
+  Copy,
+  Trash2,
+  ChevronLeft,
+  ChevronRight,
+  FileJson
+} from "lucide-react";
 import { cn } from "@/lib/utils";
+import {
+  statusCodeTemplates,
+  commonObjectTemplates,
+  type JsonTemplate
+} from "@/lib/json-templates";
 
 interface JsonEditorProps {
   value: string;
@@ -15,6 +30,7 @@ interface JsonEditorProps {
   placeholder?: string;
   className?: string;
   minHeight?: string;
+  maxHeight?: string;
 }
 
 export function JsonEditor({
@@ -23,10 +39,13 @@ export function JsonEditor({
   placeholder = '{"message": "Hello World"}',
   className,
   minHeight = "200px",
+  maxHeight,
 }: JsonEditorProps) {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [jsonError, setJsonError] = useState<string | null>(null);
   const [isValidJson, setIsValidJson] = useState<boolean>(false);
+  const [showUtilityPanel, setShowUtilityPanel] = useState(false);
+  const [copySuccess, setCopySuccess] = useState(false);
 
   // Validate JSON whenever value changes
   useEffect(() => {
@@ -67,12 +86,30 @@ export function JsonEditor({
     }
   };
 
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(value);
+      setCopySuccess(true);
+      setTimeout(() => setCopySuccess(false), 2000);
+    } catch (err) {
+      console.error("Failed to copy:", err);
+    }
+  };
+
+  const clearJson = () => {
+    onChange("");
+  };
+
+  const insertTemplate = (template: JsonTemplate) => {
+    const formatted = JSON.stringify(template.template, null, 2);
+    onChange(formatted);
+  };
+
   return (
     <div
       className={cn(
         "relative",
-        isFullscreen &&
-          "fixed inset-0 z-50 bg-white dark:bg-background p-6 flex flex-col"
+        isFullscreen && "fixed inset-0 z-50 bg-white p-6 flex flex-col"
       )}
     >
       {/* Header with controls */}
@@ -125,42 +162,141 @@ export function JsonEditor({
         </div>
       </div>
 
-      {/* Editor */}
-      <div
-        className={cn(
-          "border rounded-md overflow-hidden bg-[#2d2d2d]",
-          jsonError && "border-destructive",
-          isValidJson && "border-green-600",
-          className,
-          isFullscreen && "flex-1"
-        )}
-        style={{ minHeight: isFullscreen ? "auto" : minHeight }}
-      >
-        <Editor
-          value={value}
-          onValueChange={onChange}
-          highlight={(code) => highlight(code, languages.json, "json")}
-          padding={12}
-          placeholder={placeholder}
-          className="font-mono text-sm"
-          style={{
-            minHeight: isFullscreen ? "100%" : minHeight,
-            backgroundColor: "#2d2d2d",
-            color: "#ccc",
-            fontFamily: '"Fira Code", "Consolas", "Monaco", monospace',
-            lineHeight: "1.5",
-          }}
-          textareaClassName="focus:outline-none"
-        />
-      </div>
-
-      {/* Fullscreen overlay backdrop */}
-      {isFullscreen && (
+      {/* Main content area - flex layout only in fullscreen */}
+      <div className={cn(isFullscreen && "flex gap-4 flex-1 overflow-hidden")}>
+        {/* Editor */}
         <div
-          className="fixed inset-0 bg-black/50 -z-10"
-          onClick={() => setIsFullscreen(false)}
-        />
-      )}
+          className={cn(
+            "border rounded-md overflow-auto bg-[#2d2d2d]",
+            jsonError && "border-destructive",
+            isValidJson && "border-green-600",
+            className,
+            isFullscreen && "flex-1"
+          )}
+          style={{
+            minHeight: isFullscreen ? "auto" : minHeight,
+            maxHeight: isFullscreen ? "100%" : maxHeight
+          }}
+        >
+          <Editor
+            value={value}
+            onValueChange={onChange}
+            highlight={(code) => highlight(code, languages.json, "json")}
+            padding={12}
+            placeholder={placeholder}
+            className="font-mono text-sm"
+            style={{
+              backgroundColor: "#2d2d2d",
+              color: "#ccc",
+              fontFamily: '"Fira Code", "Consolas", "Monaco", monospace',
+              lineHeight: "1.5",
+            }}
+            textareaClassName="focus:outline-none"
+          />
+        </div>
+
+        {/* Utility Panel - Only show in fullscreen */}
+        {isFullscreen && showUtilityPanel && (
+          <div className="w-80 border rounded-md bg-gray-50 p-4 overflow-y-auto flex-shrink-0">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-semibold text-sm flex items-center gap-2">
+                <FileJson className="h-4 w-4" />
+                Utilities
+              </h3>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowUtilityPanel(false)}
+              >
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+            </div>
+
+            {/* Actions Section */}
+            <div className="space-y-2 mb-6">
+              <h4 className="text-xs font-medium text-gray-600 uppercase">Actions</h4>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="w-full justify-start"
+                onClick={copyToClipboard}
+              >
+                <Copy className="h-4 w-4 mr-2" />
+                {copySuccess ? "Copied!" : "Copy JSON"}
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="w-full justify-start"
+                onClick={clearJson}
+              >
+                <Trash2 className="h-4 w-4 mr-2" />
+                Clear
+              </Button>
+            </div>
+
+            {/* Status Code Templates */}
+            <div className="space-y-2 mb-6">
+              <h4 className="text-xs font-medium text-gray-600 uppercase">
+                By Status Code
+              </h4>
+              <div className="space-y-1">
+                {statusCodeTemplates.map((template) => (
+                  <button
+                    key={template.id}
+                    type="button"
+                    onClick={() => insertTemplate(template)}
+                    className="w-full text-left px-3 py-2 text-sm rounded-md hover:bg-gray-200 transition-colors border border-gray-200"
+                  >
+                    <div className="font-medium">{template.name}</div>
+                    <div className="text-xs text-gray-600">
+                      {template.description}
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Common Object Templates */}
+            <div className="space-y-2">
+              <h4 className="text-xs font-medium text-gray-600 uppercase">
+                Common Objects
+              </h4>
+              <div className="space-y-1">
+                {commonObjectTemplates.map((template) => (
+                  <button
+                    key={template.id}
+                    type="button"
+                    onClick={() => insertTemplate(template)}
+                    className="w-full text-left px-3 py-2 text-sm rounded-md hover:bg-gray-200 transition-colors border border-gray-200"
+                  >
+                    <div className="font-medium">{template.name}</div>
+                    <div className="text-xs text-gray-600">
+                      {template.description}
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Show Panel Button - Only show in fullscreen when panel is hidden */}
+        {isFullscreen && !showUtilityPanel && (
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => setShowUtilityPanel(true)}
+            className="fixed right-6 top-20"
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </Button>
+        )}
+      </div>
     </div>
   );
 }

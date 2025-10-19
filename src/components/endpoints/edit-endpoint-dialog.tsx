@@ -253,6 +253,7 @@ export function EditEndpointDialog({
                 onChange={(value) => setValue("responseData", value)}
                 placeholder='{"message": "Hello World"}'
                 minHeight="300px"
+                maxHeight="400px"
               />
             ) : (
               <Textarea
