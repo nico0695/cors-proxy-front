@@ -10,19 +10,21 @@ import {
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Copy, ExternalLink } from "lucide-react";
+import { Copy, ExternalLink, Edit } from "lucide-react";
 import { format } from "date-fns";
 
 interface EndpointDetailsDialogProps {
   endpoint: MockEndpoint | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onEdit?: (endpoint: MockEndpoint) => void;
 }
 
 export function EndpointDetailsDialog({
   endpoint,
   open,
   onOpenChange,
+  onEdit,
 }: EndpointDetailsDialogProps) {
   if (!endpoint) return null;
 
@@ -49,15 +51,32 @@ export function EndpointDetailsDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            {endpoint.name}
-            <Badge variant={endpoint.enabled ? "default" : "secondary"}>
-              {endpoint.enabled ? "Active" : "Inactive"}
-            </Badge>
-          </DialogTitle>
-          <DialogDescription>
-            <code className="text-sm font-mono">{endpoint.path}</code>
-          </DialogDescription>
+          <div className="flex items-start justify-between">
+            <div>
+              <DialogTitle className="flex items-center gap-2">
+                {endpoint.name}
+                <Badge variant={endpoint.enabled ? "default" : "secondary"}>
+                  {endpoint.enabled ? "Active" : "Inactive"}
+                </Badge>
+              </DialogTitle>
+              <DialogDescription>
+                <code className="text-sm font-mono">{endpoint.path}</code>
+              </DialogDescription>
+            </div>
+            {onEdit && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  onEdit(endpoint);
+                  onOpenChange(false);
+                }}
+              >
+                <Edit className="h-4 w-4 mr-1" />
+                Edit
+              </Button>
+            )}
+          </div>
         </DialogHeader>
 
         <div className="space-y-6">

@@ -10,15 +10,16 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Clock, Code, Power, PowerOff } from "lucide-react";
+import { Clock, Code, Power, PowerOff, Edit } from "lucide-react";
 import { useUpdateEndpoint } from "@/hooks/use-endpoints";
 
 interface EndpointCardProps {
   endpoint: MockEndpoint;
   onViewDetails?: (endpoint: MockEndpoint) => void;
+  onEdit?: (endpoint: MockEndpoint) => void;
 }
 
-export function EndpointCard({ endpoint, onViewDetails }: EndpointCardProps) {
+export function EndpointCard({ endpoint, onViewDetails, onEdit }: EndpointCardProps) {
   const updateMutation = useUpdateEndpoint();
 
   const toggleEnabled = () => {
@@ -89,6 +90,14 @@ export function EndpointCard({ endpoint, onViewDetails }: EndpointCardProps) {
           disabled={updateMutation.isPending}
         >
           {endpoint.enabled ? "Disable" : "Enable"}
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => onEdit?.(endpoint)}
+        >
+          <Edit className="h-4 w-4 mr-1" />
+          Edit
         </Button>
         <Button
           variant="outline"

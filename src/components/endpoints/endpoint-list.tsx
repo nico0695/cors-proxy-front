@@ -4,12 +4,14 @@ import { useState } from "react";
 import { useEndpoints } from "@/hooks/use-endpoints";
 import { EndpointCard } from "./endpoint-card";
 import { EndpointDetailsDialog } from "./endpoint-details-dialog";
+import { EditEndpointDialog } from "./edit-endpoint-dialog";
 import { Card, CardContent } from "@/components/ui/card";
 import { MockEndpoint } from "@/lib/types";
 
 export function EndpointList() {
   const { data: endpoints, isLoading, error } = useEndpoints();
   const [selectedEndpoint, setSelectedEndpoint] = useState<MockEndpoint | null>(null);
+  const [editingEndpoint, setEditingEndpoint] = useState<MockEndpoint | null>(null);
 
   console.log('EndpointList - Loading:', isLoading);
   console.log('EndpointList - Error:', error);
@@ -74,6 +76,7 @@ export function EndpointList() {
             key={endpoint.id}
             endpoint={endpoint}
             onViewDetails={setSelectedEndpoint}
+            onEdit={setEditingEndpoint}
           />
         ))}
       </div>
@@ -82,6 +85,16 @@ export function EndpointList() {
         endpoint={selectedEndpoint}
         open={!!selectedEndpoint}
         onOpenChange={(open) => !open && setSelectedEndpoint(null)}
+        onEdit={(endpoint) => {
+          setSelectedEndpoint(null);
+          setEditingEndpoint(endpoint);
+        }}
+      />
+
+      <EditEndpointDialog
+        endpoint={editingEndpoint}
+        open={!!editingEndpoint}
+        onOpenChange={(open) => !open && setEditingEndpoint(null)}
       />
     </>
   );
