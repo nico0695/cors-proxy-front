@@ -7,6 +7,8 @@ import type {
   LoginPayload,
   RegisterPayload,
   PublicUser,
+  CreateUserDto,
+  UpdateUserDto,
 } from "./types";
 import {
   getAccessToken,
@@ -167,6 +169,51 @@ export const api = {
   getUsers: async (): Promise<PublicUser[]> => {
     const res = await authorizedFetch(`${API_BASE}/api-auth/users`);
     return handleResponse<PublicUser[]>(res);
+  },
+
+  createUser: async (data: CreateUserDto): Promise<PublicUser> => {
+    const res = await authorizedFetch(`${API_BASE}/api-auth/users`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+    return handleResponse<PublicUser>(res);
+  },
+
+  updateUser: async (id: string, data: UpdateUserDto): Promise<PublicUser> => {
+    const res = await authorizedFetch(`${API_BASE}/api-auth/users/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+    return handleResponse<PublicUser>(res);
+  },
+
+  deleteUser: async (id: string): Promise<void> => {
+    const res = await authorizedFetch(`${API_BASE}/api-auth/users/${id}`, {
+      method: "DELETE",
+    });
+    if (!res.ok) {
+      let errorMessage = `HTTP error! status: ${res.status}`;
+      try {
+        const responseText = await res.text();
+        if (responseText) {
+          try {
+            const errorData = JSON.parse(responseText);
+            if (errorData.error) {
+              errorMessage = errorData.error;
+            } else if (errorData.message) {
+              errorMessage = errorData.message;
+            }
+          } catch {
+            errorMessage = responseText;
+          }
+        }
+      } catch (error) {
+        console.error("Failed to read error response:", error);
+      }
+      throw new Error(errorMessage);
+    }
   },
 
   // Mock endpoint endpoints (using authorizedFetch for future-proofing)

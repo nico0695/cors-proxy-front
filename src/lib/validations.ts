@@ -44,3 +44,21 @@ export const registerSchema = z.object({
 
 export type LoginFormData = z.infer<typeof loginSchema>;
 export type RegisterFormData = z.infer<typeof registerSchema>;
+
+// User management schemas
+export const createUserSchema = z.object({
+  name: z.string().min(3, "Username must be at least 3 characters").max(50, "Username is too long"),
+  password: z.string().min(6, "Password must be at least 6 characters").max(100, "Password is too long"),
+  email: z.string().email("Invalid email").optional().or(z.literal("")),
+  status: z.enum(["enabled", "blocked"]).default("enabled"),
+});
+
+export const updateUserSchema = z.object({
+  name: z.string().min(3, "Username must be at least 3 characters").max(50, "Username is too long").optional(),
+  password: z.string().min(6, "Password must be at least 6 characters").max(100, "Password is too long").optional(),
+  email: z.string().email("Invalid email").optional().or(z.literal("")),
+  status: z.enum(["enabled", "blocked"]).optional(),
+});
+
+export type CreateUserFormData = z.infer<typeof createUserSchema>;
+export type UpdateUserFormData = z.infer<typeof updateUserSchema>;

@@ -92,7 +92,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => {
       cancelTokenRefresh();
     };
-  }, [refreshSession]);
+  }, [refreshSession, router]);
 
   const loginMutation = useMutation({
     mutationFn: api.login,

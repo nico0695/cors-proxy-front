@@ -74,3 +74,18 @@ export interface RegisterPayload {
   name: string;
   password: string;
 }
+
+// User management types
+export interface CreateUserDto {
+  name: string;
+  password: string;
+  email?: string;
+  status?: UserStatus;
+}
+
+export interface UpdateUserDto {
+  name?: string;
+  password?: string;
+  email?: string;
+  status?: UserStatus;
+}

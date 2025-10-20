@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { Suspense, useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Eye, EyeOff } from "lucide-react";
 import { loginSchema, registerSchema, type LoginFormData, type RegisterFormData } from "@/lib/validations";
 
-export default function AuthPage() {
+function AuthPageContent() {
   const { login, register, status } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -231,5 +231,22 @@ export default function AuthPage() {
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+export default function AuthPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex h-screen items-center justify-center">
+          <div className="flex flex-col items-center gap-4">
+            <div className="h-8 w-8 animate-spin rounded-full border-4 border-gray-300 border-t-blue-600" />
+            <p className="text-sm text-gray-600">Loading...</p>
+          </div>
+        </div>
+      }
+    >
+      <AuthPageContent />
+    </Suspense>
   );
 }
