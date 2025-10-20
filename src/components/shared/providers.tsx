@@ -3,6 +3,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState } from "react";
 import { Toaster } from "react-hot-toast";
+import { ThemeProvider } from "next-themes";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(
@@ -18,34 +19,35 @@ export function Providers({ children }: { children: React.ReactNode }) {
   );
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <Toaster
-        position="top-center"
-        toastOptions={{
-          duration: 3000,
-          style: {
-            background: "#fff",
-            color: "#363636",
-            padding: "12px 20px",
-            borderRadius: "8px",
-            fontSize: "14px",
-            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
-          },
-          success: {
-            iconTheme: {
-              primary: "#10b981",
-              secondary: "#fff",
+    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+      <QueryClientProvider client={queryClient}>
+        <Toaster
+          position="top-center"
+          toastOptions={{
+            duration: 3000,
+            className: "!bg-card !text-card-foreground !border !border-border",
+            style: {
+              padding: "12px 20px",
+              borderRadius: "8px",
+              fontSize: "14px",
+              boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
             },
-          },
-          error: {
-            iconTheme: {
-              primary: "#ef4444",
-              secondary: "#fff",
+            success: {
+              iconTheme: {
+                primary: "#10b981",
+                secondary: "hsl(var(--card))",
+              },
             },
-          },
-        }}
-      />
-      {children}
-    </QueryClientProvider>
+            error: {
+              iconTheme: {
+                primary: "#ef4444",
+                secondary: "hsl(var(--card))",
+              },
+            },
+          }}
+        />
+        {children}
+      </QueryClientProvider>
+    </ThemeProvider>
   );
 }

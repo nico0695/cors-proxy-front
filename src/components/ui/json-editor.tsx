@@ -109,7 +109,7 @@ export function JsonEditor({
     <div
       className={cn(
         "relative",
-        isFullscreen && "fixed inset-0 z-50 bg-white p-6 flex flex-col"
+        isFullscreen && "fixed inset-0 z-50 bg-background p-6 flex flex-col"
       )}
     >
       {/* Header with controls */}
@@ -167,7 +167,7 @@ export function JsonEditor({
         {/* Editor */}
         <div
           className={cn(
-            "border rounded-md overflow-auto bg-[#2d2d2d]",
+            "border rounded-md overflow-auto bg-muted",
             jsonError && "border-destructive",
             isValidJson && "border-green-600",
             className,
@@ -184,20 +184,18 @@ export function JsonEditor({
             highlight={(code) => highlight(code, languages.json, "json")}
             padding={12}
             placeholder={placeholder}
-            className="font-mono text-sm"
+            className="font-mono text-sm bg-muted text-foreground"
             style={{
-              backgroundColor: "#2d2d2d",
-              color: "#ccc",
               fontFamily: '"Fira Code", "Consolas", "Monaco", monospace',
               lineHeight: "1.5",
             }}
-            textareaClassName="focus:outline-none"
+            textareaClassName="focus:outline-none bg-transparent"
           />
         </div>
 
         {/* Utility Panel - Only show in fullscreen */}
         {isFullscreen && showUtilityPanel && (
-          <div className="w-80 border rounded-md bg-gray-50 p-4 overflow-y-auto flex-shrink-0">
+          <div className="w-80 border rounded-md bg-card p-4 overflow-y-auto flex-shrink-0">
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-semibold text-sm flex items-center gap-2">
                 <FileJson className="h-4 w-4" />
@@ -215,7 +213,7 @@ export function JsonEditor({
 
             {/* Actions Section */}
             <div className="space-y-2 mb-6">
-              <h4 className="text-xs font-medium text-gray-600 uppercase">Actions</h4>
+              <h4 className="text-xs font-medium text-muted-foreground uppercase">Actions</h4>
               <Button
                 type="button"
                 variant="outline"
@@ -240,7 +238,7 @@ export function JsonEditor({
 
             {/* Status Code Templates */}
             <div className="space-y-2 mb-6">
-              <h4 className="text-xs font-medium text-gray-600 uppercase">
+              <h4 className="text-xs font-medium text-muted-foreground uppercase">
                 By Status Code
               </h4>
               <div className="space-y-1">
@@ -249,10 +247,10 @@ export function JsonEditor({
                     key={template.id}
                     type="button"
                     onClick={() => insertTemplate(template)}
-                    className="w-full text-left px-3 py-2 text-sm rounded-md hover:bg-gray-200 transition-colors border border-gray-200"
+                    className="w-full text-left px-3 py-2 text-sm rounded-md hover:bg-accent transition-colors border border-border"
                   >
                     <div className="font-medium">{template.name}</div>
-                    <div className="text-xs text-gray-600">
+                    <div className="text-xs text-muted-foreground">
                       {template.description}
                     </div>
                   </button>
@@ -262,7 +260,7 @@ export function JsonEditor({
 
             {/* Common Object Templates */}
             <div className="space-y-2">
-              <h4 className="text-xs font-medium text-gray-600 uppercase">
+              <h4 className="text-xs font-medium text-muted-foreground uppercase">
                 Common Objects
               </h4>
               <div className="space-y-1">
@@ -271,10 +269,10 @@ export function JsonEditor({
                     key={template.id}
                     type="button"
                     onClick={() => insertTemplate(template)}
-                    className="w-full text-left px-3 py-2 text-sm rounded-md hover:bg-gray-200 transition-colors border border-gray-200"
+                    className="w-full text-left px-3 py-2 text-sm rounded-md hover:bg-accent transition-colors border border-border"
                   >
                     <div className="font-medium">{template.name}</div>
-                    <div className="text-xs text-gray-600">
+                    <div className="text-xs text-muted-foreground">
                       {template.description}
                     </div>
                   </button>

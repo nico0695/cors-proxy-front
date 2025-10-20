@@ -67,3 +67,19 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Toast theme support */
+@layer components {
+  :root [data-sonner-toast] {
+    background: hsl(var(--background));
+    border: 1px solid hsl(var(--border));
+    color: hsl(var(--foreground));
+  }
+
+  /* Override react-hot-toast styles for dark mode support */
+  .dark [data-rich-toast] {
+    background: hsl(var(--card)) !important;
+    color: hsl(var(--card-foreground)) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+  }
+}

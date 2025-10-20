@@ -81,7 +81,7 @@ export function DelayInput({ value, onChange, error }: DelayInputProps) {
       <Label>Delay (max {MAX_DELAY_SECONDS}s / {MAX_DELAY_MS}ms)</Label>
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-1">
-          <Label htmlFor="delay-ms" className="text-xs text-gray-600">
+          <Label htmlFor="delay-ms" className="text-xs text-muted-foreground">
             Milliseconds
           </Label>
           <Input
@@ -95,7 +95,7 @@ export function DelayInput({ value, onChange, error }: DelayInputProps) {
           />
         </div>
         <div className="space-y-1">
-          <Label htmlFor="delay-seconds" className="text-xs text-gray-600">
+          <Label htmlFor="delay-seconds" className="text-xs text-muted-foreground">
             Seconds
           </Label>
           <Input

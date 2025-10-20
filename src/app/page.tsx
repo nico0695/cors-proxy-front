@@ -6,6 +6,7 @@ import { EndpointStats } from "@/components/endpoints/endpoint-stats";
 import { EndpointList } from "@/components/endpoints/endpoint-list";
 import { CreateEndpointDialog } from "@/components/endpoints/create-endpoint-dialog";
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { Plus, RefreshCw } from "lucide-react";
 import { endpointKeys, statsKeys } from "@/hooks/use-endpoints";
 
@@ -32,6 +33,7 @@ export default function Home() {
               </p>
             </div>
             <div className="flex gap-2">
+              <ThemeToggle />
               <Button variant="outline" size="sm" onClick={handleRefresh}>
                 <RefreshCw className="h-4 w-4 mr-2" />
                 Refresh
