@@ -41,3 +41,36 @@ export interface ApiStats {
   maxEndpoints: number;
   remainingSlots: number;
 }
+
+// Auth types
+export type UserStatus = "enabled" | "blocked";
+
+export interface PublicUser {
+  id: string;
+  name: string;
+  email?: string;
+  status: UserStatus;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface AuthTokens {
+  accessToken: string;
+  refreshToken: string;
+}
+
+export interface AuthResponse {
+  accessToken: string;
+  refreshToken: string;
+  user: PublicUser;
+}
+
+export interface LoginPayload {
+  name: string;
+  password: string;
+}
+
+export interface RegisterPayload {
+  name: string;
+  password: string;
+}
