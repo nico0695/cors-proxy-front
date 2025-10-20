@@ -26,3 +26,39 @@ export const updateEndpointSchema = createEndpointSchema.partial();
 
 export type CreateEndpointFormData = z.infer<typeof createEndpointSchema>;
 export type UpdateEndpointFormData = z.infer<typeof updateEndpointSchema>;
+
+// Auth schemas
+export const loginSchema = z.object({
+  name: z.string().min(1, "Username is required").max(50, "Username is too long"),
+  password: z.string().min(1, "Password is required"),
+});
+
+export const registerSchema = z.object({
+  name: z.string().min(3, "Username must be at least 3 characters").max(50, "Username is too long"),
+  password: z.string().min(6, "Password must be at least 6 characters").max(100, "Password is too long"),
+  confirmPassword: z.string().min(1, "Please confirm your password"),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ["confirmPassword"],
+});
+
+export type LoginFormData = z.infer<typeof loginSchema>;
+export type RegisterFormData = z.infer<typeof registerSchema>;
+
+// User management schemas
+export const createUserSchema = z.object({
+  name: z.string().min(3, "Username must be at least 3 characters").max(50, "Username is too long"),
+  password: z.string().min(6, "Password must be at least 6 characters").max(100, "Password is too long"),
+  email: z.string().email("Invalid email").optional().or(z.literal("")),
+  status: z.enum(["enabled", "blocked"]).default("enabled"),
+});
+
+export const updateUserSchema = z.object({
+  name: z.string().min(3, "Username must be at least 3 characters").max(50, "Username is too long").optional(),
+  password: z.string().min(6, "Password must be at least 6 characters").max(100, "Password is too long").optional(),
+  email: z.string().email("Invalid email").optional().or(z.literal("")),
+  status: z.enum(["enabled", "blocked"]).optional(),
+});
+
+export type CreateUserFormData = z.infer<typeof createUserSchema>;
+export type UpdateUserFormData = z.infer<typeof updateUserSchema>;
