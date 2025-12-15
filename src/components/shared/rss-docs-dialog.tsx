@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   Dialog,
@@ -6,11 +6,11 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
-} from "@/components/ui/dialog";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Copy, Rss } from "lucide-react";
-import toast from "react-hot-toast";
+} from '@/components/ui/dialog';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Copy, Rss } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 interface RssDocsDialogProps {
   open: boolean;
@@ -18,15 +18,15 @@ interface RssDocsDialogProps {
 }
 
 export function RssDocsDialog({ open, onOpenChange }: RssDocsDialogProps) {
-  const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
+  const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
 
   const copyToClipboard = async (text: string) => {
     try {
       await navigator.clipboard.writeText(text);
-      toast.success("Copied to clipboard");
+      toast.success('Copied to clipboard');
     } catch (err) {
-      console.error("Failed to copy:", err);
-      toast.error("Failed to copy to clipboard");
+      console.error('Failed to copy:', err);
+      toast.error('Failed to copy to clipboard');
     }
   };
 
@@ -42,7 +42,9 @@ export function RssDocsDialog({ open, onOpenChange }: RssDocsDialogProps) {
 
     // Keep first maxStartChars and last part
     const endChars = 15;
-    return `${cleanUrl.slice(0, maxStartChars)}.....${cleanUrl.slice(-endChars)}`;
+    return `${cleanUrl.slice(0, maxStartChars)}.....${cleanUrl.slice(
+      -endChars
+    )}`;
   };
 
   return (
@@ -61,10 +63,13 @@ export function RssDocsDialog({ open, onOpenChange }: RssDocsDialogProps) {
         <div className="space-y-4 sm:space-y-6">
           {/* Overview Section */}
           <div>
-            <h3 className="font-semibold mb-2 text-sm sm:text-base">What is RSS Proxy?</h3>
+            <h3 className="font-semibold mb-2 text-sm sm:text-base">
+              What is RSS Proxy?
+            </h3>
             <p className="text-xs sm:text-sm text-muted-foreground">
               Access and manipulate RSS feeds without browser CORS restrictions.
-              Perfect for building feed readers, news aggregators, or content dashboards.
+              Perfect for building feed readers, news aggregators, or content
+              dashboards.
             </p>
           </div>
 
@@ -72,13 +77,19 @@ export function RssDocsDialog({ open, onOpenChange }: RssDocsDialogProps) {
           <div className="space-y-3 sm:space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="font-semibold text-sm sm:text-base">Endpoint</h3>
-              <Badge variant="secondary" className="text-xs">GET</Badge>
+              <Badge variant="secondary" className="text-xs">
+                GET
+              </Badge>
             </div>
 
             <div className="flex items-start sm:items-center gap-2">
               <code className="flex-1 bg-muted px-2 sm:px-3 py-2 rounded text-xs sm:text-sm font-mono break-all sm:break-normal">
-                <span className="hidden sm:inline">{apiBaseUrl}/rss?url=&lt;feed-url&gt;</span>
-                <span className="sm:hidden">{truncateUrl(`${apiBaseUrl}/rss?url=<feed-url>`)}</span>
+                <span className="hidden sm:inline">
+                  {truncateUrl(`${apiBaseUrl}/rss?url=<feed-url>`, 16)}
+                </span>
+                <span className="sm:hidden">
+                  {truncateUrl(`${apiBaseUrl}/rss?url=<feed-url>`)}
+                </span>
               </code>
               <Button
                 variant="outline"
@@ -91,15 +102,23 @@ export function RssDocsDialog({ open, onOpenChange }: RssDocsDialogProps) {
             </div>
 
             <div>
-              <h4 className="text-xs sm:text-sm font-semibold mb-2">Parameters</h4>
+              <h4 className="text-xs sm:text-sm font-semibold mb-2">
+                Parameters
+              </h4>
               {/* Desktop table */}
               <div className="hidden sm:block overflow-x-auto">
                 <table className="w-full border text-xs sm:text-sm">
                   <thead className="bg-muted">
                     <tr>
-                      <th className="border px-2 sm:px-3 py-2 text-left">Parameter</th>
-                      <th className="border px-2 sm:px-3 py-2 text-left">Type</th>
-                      <th className="border px-2 sm:px-3 py-2 text-left">Description</th>
+                      <th className="border px-2 sm:px-3 py-2 text-left">
+                        Parameter
+                      </th>
+                      <th className="border px-2 sm:px-3 py-2 text-left">
+                        Type
+                      </th>
+                      <th className="border px-2 sm:px-3 py-2 text-left">
+                        Description
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
@@ -118,24 +137,37 @@ export function RssDocsDialog({ open, onOpenChange }: RssDocsDialogProps) {
               {/* Mobile stacked layout */}
               <div className="sm:hidden border rounded bg-muted/50 p-3 space-y-2 text-xs">
                 <div>
-                  <span className="font-semibold">Parameter:</span> <code className="bg-muted px-1 py-0.5 rounded">url</code>
+                  <span className="font-semibold">Parameter:</span>{' '}
+                  <code className="bg-muted px-1 py-0.5 rounded">url</code>
                 </div>
                 <div>
-                  <span className="font-semibold">Type:</span> <span className="text-muted-foreground">string</span>
+                  <span className="font-semibold">Type:</span>{' '}
+                  <span className="text-muted-foreground">string</span>
                 </div>
                 <div>
-                  <span className="font-semibold">Description:</span> <span className="text-muted-foreground">The RSS feed URL to fetch (required)</span>
+                  <span className="font-semibold">Description:</span>{' '}
+                  <span className="text-muted-foreground">
+                    The RSS feed URL to fetch (required)
+                  </span>
                 </div>
               </div>
             </div>
 
             <div>
-              <h4 className="text-xs sm:text-sm font-semibold mb-2">Examples</h4>
+              <h4 className="text-xs sm:text-sm font-semibold mb-2">
+                Examples
+              </h4>
               <div className="space-y-2 sm:space-y-3">
                 <div className="flex items-start gap-1 sm:gap-2">
                   <pre className="flex-1 bg-muted p-2 sm:p-3 rounded text-xs font-mono break-all sm:break-normal">
-                    <span className="hidden sm:inline">{apiBaseUrl}/rss?url=https://feeds.bbci.co.uk/news/rss.xml</span>
-                    <span className="sm:hidden">{truncateUrl(`${apiBaseUrl}/rss?url=https://feeds.bbci.co.uk/news/rss.xml`)}</span>
+                    <span className="hidden sm:inline">
+                      {truncateUrl(`${apiBaseUrl}/rss?url=https://feeds.bbci.co.uk/news/rss.xml`, 16)}
+                    </span>
+                    <span className="sm:hidden">
+                      {truncateUrl(
+                        `${apiBaseUrl}/rss?url=https://feeds.bbci.co.uk/news/rss.xml`
+                      )}
+                    </span>
                   </pre>
                   <Button
                     variant="outline"
@@ -153,8 +185,14 @@ export function RssDocsDialog({ open, onOpenChange }: RssDocsDialogProps) {
 
                 <div className="flex items-start gap-1 sm:gap-2">
                   <pre className="flex-1 bg-muted p-2 sm:p-3 rounded text-xs font-mono break-all sm:break-normal">
-                    <span className="hidden sm:inline">{apiBaseUrl}/rss?url=https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml</span>
-                    <span className="sm:hidden">{truncateUrl(`${apiBaseUrl}/rss?url=https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml`)}</span>
+                    <span className="hidden sm:inline">
+                      {truncateUrl(`${apiBaseUrl}/rss?url=https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml`, 16)}
+                    </span>
+                    <span className="sm:hidden">
+                      {truncateUrl(
+                        `${apiBaseUrl}/rss?url=https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml`
+                      )}
+                    </span>
                   </pre>
                   <Button
                     variant="outline"
@@ -172,8 +210,14 @@ export function RssDocsDialog({ open, onOpenChange }: RssDocsDialogProps) {
 
                 <div className="flex items-start gap-1 sm:gap-2">
                   <pre className="flex-1 bg-muted p-2 sm:p-3 rounded text-xs font-mono break-all sm:break-normal">
-                    <span className="hidden sm:inline">{apiBaseUrl}/rss?url=https://news.ycombinator.com/rss</span>
-                    <span className="sm:hidden">{truncateUrl(`${apiBaseUrl}/rss?url=https://news.ycombinator.com/rss`)}</span>
+                    <span className="hidden sm:inline">
+                      {truncateUrl(`${apiBaseUrl}/rss?url=https://news.ycombinator.com/rss`, 16)}
+                    </span>
+                    <span className="sm:hidden">
+                      {truncateUrl(
+                        `${apiBaseUrl}/rss?url=https://news.ycombinator.com/rss`
+                      )}
+                    </span>
                   </pre>
                   <Button
                     variant="outline"
@@ -191,8 +235,14 @@ export function RssDocsDialog({ open, onOpenChange }: RssDocsDialogProps) {
 
                 <div className="flex items-start gap-1 sm:gap-2">
                   <pre className="flex-1 bg-muted p-2 sm:p-3 rounded text-xs font-mono break-all sm:break-normal">
-                    <span className="hidden sm:inline">{apiBaseUrl}/rss?url=https://www.reddit.com/r/programming/.rss</span>
-                    <span className="sm:hidden">{truncateUrl(`${apiBaseUrl}/rss?url=https://www.reddit.com/r/programming/.rss`)}</span>
+                    <span className="hidden sm:inline">
+                      {truncateUrl(`${apiBaseUrl}/rss?url=https://www.reddit.com/r/programming/.rss`, 16)}
+                    </span>
+                    <span className="sm:hidden">
+                      {truncateUrl(
+                        `${apiBaseUrl}/rss?url=https://www.reddit.com/r/programming/.rss`
+                      )}
+                    </span>
                   </pre>
                   <Button
                     variant="outline"
@@ -210,8 +260,14 @@ export function RssDocsDialog({ open, onOpenChange }: RssDocsDialogProps) {
 
                 <div className="flex items-start gap-1 sm:gap-2">
                   <pre className="flex-1 bg-muted p-2 sm:p-3 rounded text-xs font-mono break-all sm:break-normal">
-                    <span className="hidden sm:inline">{apiBaseUrl}/rss?url=https://techcrunch.com/feed/</span>
-                    <span className="sm:hidden">{truncateUrl(`${apiBaseUrl}/rss?url=https://techcrunch.com/feed/`)}</span>
+                    <span className="hidden sm:inline">
+                      {truncateUrl(`${apiBaseUrl}/rss?url=https://techcrunch.com/feed/`, 16)}
+                    </span>
+                    <span className="sm:hidden">
+                      {truncateUrl(
+                        `${apiBaseUrl}/rss?url=https://techcrunch.com/feed/`
+                      )}
+                    </span>
                   </pre>
                   <Button
                     variant="outline"
