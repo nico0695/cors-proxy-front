@@ -3,10 +3,13 @@
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
-import { LogOut, User } from "lucide-react";
+import { LogOut, User, Rss } from "lucide-react";
+import { RssDocsDialog } from "./rss-docs-dialog";
+import { useState } from "react";
 
 export function Header() {
   const { user, logout } = useAuth();
+  const [rssDocsOpen, setRssDocsOpen] = useState(false);
 
   return (
     <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -23,6 +26,15 @@ export function Header() {
           </div>
 
           <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setRssDocsOpen(true)}
+              className="border-blue-500 text-blue-600 hover:bg-blue-50 hover:text-blue-700 dark:border-blue-400 dark:text-blue-400 dark:hover:bg-blue-950 dark:hover:text-blue-300"
+            >
+              <Rss className="h-4 w-4 sm:mr-2" />
+              <span className="hidden sm:inline">RSS Docs</span>
+            </Button>
             <ThemeToggle />
             <Button variant="ghost" size="sm" onClick={logout}>
               <LogOut className="h-4 w-4 mr-2" />
@@ -31,6 +43,7 @@ export function Header() {
           </div>
         </div>
       </div>
+      <RssDocsDialog open={rssDocsOpen} onOpenChange={setRssDocsOpen} />
     </header>
   );
 }
