@@ -77,6 +77,7 @@ export function EditProxyDialog({
         groupId: endpoint.groupId || "",
         statusCodeOverride: endpoint.statusCodeOverride,
         enabled: endpoint.enabled,
+        useCache: endpoint.useCache,
         delayMs: endpoint.delayMs,
       });
     }
@@ -93,6 +94,7 @@ export function EditProxyDialog({
       if (data.groupId !== undefined) updateData.groupId = data.groupId;
       if (data.statusCodeOverride !== undefined) updateData.statusCodeOverride = data.statusCodeOverride;
       if (data.enabled !== undefined) updateData.enabled = data.enabled;
+      if (data.useCache !== undefined) updateData.useCache = data.useCache;
       if (data.delayMs !== undefined) updateData.delayMs = data.delayMs;
 
       await updateMutation.mutateAsync({
@@ -146,14 +148,14 @@ export function EditProxyDialog({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="baseUrl">Base URL</Label>
+            <Label htmlFor="baseUrl">Base URL (optional)</Label>
             <Input
               id="baseUrl"
               placeholder="https://api.example.com"
               {...register("baseUrl")}
             />
             <p className="text-xs text-muted-foreground">
-              Must start with http:// or https://
+              Optional. Leave empty for dynamic mode (requires ?url= parameter). Provide to enable static mode with fixed upstream target.
             </p>
             {errors.baseUrl && (
               <p className="text-sm text-destructive">{errors.baseUrl.message}</p>
@@ -199,6 +201,20 @@ export function EditProxyDialog({
             onChange={(value) => setValue("delayMs", value)}
             error={errors.delayMs?.message}
           />
+
+          <div className="flex items-center justify-between space-x-2">
+            <div className="space-y-0.5">
+              <Label htmlFor="useCache">Enable caching</Label>
+              <p className="text-xs text-muted-foreground">
+                Cache successful responses for 5 minutes
+              </p>
+            </div>
+            <Switch
+              id="useCache"
+              checked={watch("useCache") || false}
+              onCheckedChange={(checked) => setValue("useCache", checked)}
+            />
+          </div>
 
           <div className="flex items-center space-x-2">
             <Switch

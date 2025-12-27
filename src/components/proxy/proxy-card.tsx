@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Clock, Code, Power, PowerOff, Edit, Copy, ExternalLink, Trash2 } from "lucide-react";
+import { Clock, Code, Power, PowerOff, Edit, Copy, ExternalLink, Trash2, Database } from "lucide-react";
 import { useUpdateProxyEndpoint, useDeleteProxyEndpoint } from "@/hooks/use-proxy-endpoints";
 import { useState } from "react";
 import toast from "react-hot-toast";
@@ -121,6 +121,14 @@ export function ProxyCard({ endpoint, onViewDetails, onEdit }: ProxyCardProps) {
             <Clock className="h-3 w-3 text-muted-foreground shrink-0" />
             <span className="text-muted-foreground">{endpoint.delayMs}ms</span>
           </div>
+          {endpoint.useCache && (
+            <div className="flex items-center gap-1.5">
+              <Database className="h-3 w-3 text-green-500 dark:text-green-400 shrink-0" />
+              <Badge variant="outline" className="text-xs border-green-500 text-green-600 dark:border-green-400 dark:text-green-400">
+                Cached (5min)
+              </Badge>
+            </div>
+          )}
           {endpoint.statusCodeOverride && (
             <div className="flex items-center gap-1.5">
               <Code className="h-3 w-3 text-orange-500 shrink-0" />
@@ -129,9 +137,11 @@ export function ProxyCard({ endpoint, onViewDetails, onEdit }: ProxyCardProps) {
               </Badge>
             </div>
           )}
-          <div className="col-span-2 truncate" title={endpoint.baseUrl}>
+          <div className="col-span-2 truncate" title={endpoint.baseUrl || "Dynamic mode"}>
             <span className="text-muted-foreground">Target: </span>
-            <span className="font-medium text-xs">{endpoint.baseUrl}</span>
+            <span className="font-medium text-xs">
+              {endpoint.baseUrl || <span className="italic">Dynamic mode</span>}
+            </span>
           </div>
           {endpoint.groupId && (
             <div className="col-span-2">

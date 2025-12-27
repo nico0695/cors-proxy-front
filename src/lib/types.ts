@@ -95,9 +95,10 @@ export interface ProxyEndpoint {
   id: string;
   name: string;
   path: string;
-  baseUrl: string;
+  baseUrl?: string;
   groupId?: string;
   enabled: boolean;
+  useCache: boolean;
   statusCodeOverride?: number;
   delayMs: number;
   createdAt: Date;
@@ -107,9 +108,10 @@ export interface ProxyEndpoint {
 export interface CreateProxyEndpointDto {
   name: string;
   path: string;
-  baseUrl: string;
+  baseUrl?: string;
   groupId?: string;
   enabled?: boolean;
+  useCache?: boolean;
   statusCodeOverride?: number;
   delayMs?: number;
 }
@@ -120,6 +122,7 @@ export interface UpdateProxyEndpointDto {
   baseUrl?: string;
   groupId?: string;
   enabled?: boolean;
+  useCache?: boolean;
   statusCodeOverride?: number;
   delayMs?: number;
 }

@@ -75,11 +75,13 @@ export const createProxyEndpointSchema = z.object({
     .regex(/^\//, "Path must start with /"),
   baseUrl: z
     .string()
-    .min(1, "Base URL is required")
-    .regex(/^https?:\/\//, "Base URL must start with http:// or https://"),
+    .regex(/^https?:\/\//, "Base URL must start with http:// or https://")
+    .optional()
+    .or(z.literal("")),
   groupId: z.string().optional(),
   statusCodeOverride: z.number().int().min(100).max(599).optional(),
   enabled: z.boolean().default(true),
+  useCache: z.boolean().default(false),
   delayMs: z.number().int().min(0).max(MAX_PROXY_DELAY_MS).default(0),
 });
 
