@@ -30,7 +30,7 @@ export function RssDocsDialog({ open, onOpenChange }: RssDocsDialogProps) {
     }
   };
 
-  const truncateUrl = (url: string, maxStartChars: number = 10) => {
+  const truncateUrl = (url: string, maxStartChars: number = 80) => {
     // Remove protocol (http://, https://)
     let cleanUrl = url.replace(/^https?:\/\//, '');
 
@@ -38,7 +38,7 @@ export function RssDocsDialog({ open, onOpenChange }: RssDocsDialogProps) {
     cleanUrl = cleanUrl.replace(/^www\./, '');
 
     // If still too long, truncate
-    if (cleanUrl.length <= 30) return cleanUrl;
+    if (cleanUrl.length <= maxStartChars) return cleanUrl;
 
     // Keep first maxStartChars and last part
     const endChars = 15;
@@ -85,10 +85,10 @@ export function RssDocsDialog({ open, onOpenChange }: RssDocsDialogProps) {
             <div className="flex items-start sm:items-center gap-2">
               <code className="flex-1 bg-muted px-2 sm:px-3 py-2 rounded text-xs sm:text-sm font-mono break-all sm:break-normal">
                 <span className="hidden sm:inline">
-                  {truncateUrl(`${apiBaseUrl}/rss?url=<feed-url>`, 16)}
+                  {truncateUrl(`${apiBaseUrl}/rss?url=<feed-url>`)}
                 </span>
                 <span className="sm:hidden">
-                  {truncateUrl(`${apiBaseUrl}/rss?url=<feed-url>`)}
+                  {truncateUrl(`${apiBaseUrl}/rss?url=<feed-url>`, 16)}
                 </span>
               </code>
               <Button
@@ -161,11 +161,11 @@ export function RssDocsDialog({ open, onOpenChange }: RssDocsDialogProps) {
                 <div className="flex items-start gap-1 sm:gap-2">
                   <pre className="flex-1 bg-muted p-2 sm:p-3 rounded text-xs font-mono break-all sm:break-normal">
                     <span className="hidden sm:inline">
-                      {truncateUrl(`${apiBaseUrl}/rss?url=https://feeds.bbci.co.uk/news/rss.xml`, 16)}
+                      {truncateUrl(`${apiBaseUrl}/rss?url=https://feeds.bbci.co.uk/news/rss.xml`)}
                     </span>
                     <span className="sm:hidden">
                       {truncateUrl(
-                        `${apiBaseUrl}/rss?url=https://feeds.bbci.co.uk/news/rss.xml`
+                        `${apiBaseUrl}/rss?url=https://feeds.bbci.co.uk/news/rss.xml`, 16
                       )}
                     </span>
                   </pre>
@@ -186,11 +186,11 @@ export function RssDocsDialog({ open, onOpenChange }: RssDocsDialogProps) {
                 <div className="flex items-start gap-1 sm:gap-2">
                   <pre className="flex-1 bg-muted p-2 sm:p-3 rounded text-xs font-mono break-all sm:break-normal">
                     <span className="hidden sm:inline">
-                      {truncateUrl(`${apiBaseUrl}/rss?url=https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml`, 16)}
+                      {truncateUrl(`${apiBaseUrl}/rss?url=https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml`)}
                     </span>
                     <span className="sm:hidden">
                       {truncateUrl(
-                        `${apiBaseUrl}/rss?url=https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml`
+                        `${apiBaseUrl}/rss?url=https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml`, 16
                       )}
                     </span>
                   </pre>
@@ -211,11 +211,11 @@ export function RssDocsDialog({ open, onOpenChange }: RssDocsDialogProps) {
                 <div className="flex items-start gap-1 sm:gap-2">
                   <pre className="flex-1 bg-muted p-2 sm:p-3 rounded text-xs font-mono break-all sm:break-normal">
                     <span className="hidden sm:inline">
-                      {truncateUrl(`${apiBaseUrl}/rss?url=https://news.ycombinator.com/rss`, 16)}
+                      {truncateUrl(`${apiBaseUrl}/rss?url=https://news.ycombinator.com/rss`)}
                     </span>
                     <span className="sm:hidden">
                       {truncateUrl(
-                        `${apiBaseUrl}/rss?url=https://news.ycombinator.com/rss`
+                        `${apiBaseUrl}/rss?url=https://news.ycombinator.com/rss`, 16
                       )}
                     </span>
                   </pre>
@@ -236,11 +236,11 @@ export function RssDocsDialog({ open, onOpenChange }: RssDocsDialogProps) {
                 <div className="flex items-start gap-1 sm:gap-2">
                   <pre className="flex-1 bg-muted p-2 sm:p-3 rounded text-xs font-mono break-all sm:break-normal">
                     <span className="hidden sm:inline">
-                      {truncateUrl(`${apiBaseUrl}/rss?url=https://www.reddit.com/r/programming/.rss`, 16)}
+                      {truncateUrl(`${apiBaseUrl}/rss?url=https://www.reddit.com/r/programming/.rss`)}
                     </span>
                     <span className="sm:hidden">
                       {truncateUrl(
-                        `${apiBaseUrl}/rss?url=https://www.reddit.com/r/programming/.rss`
+                        `${apiBaseUrl}/rss?url=https://www.reddit.com/r/programming/.rss`, 16
                       )}
                     </span>
                   </pre>
@@ -261,11 +261,11 @@ export function RssDocsDialog({ open, onOpenChange }: RssDocsDialogProps) {
                 <div className="flex items-start gap-1 sm:gap-2">
                   <pre className="flex-1 bg-muted p-2 sm:p-3 rounded text-xs font-mono break-all sm:break-normal">
                     <span className="hidden sm:inline">
-                      {truncateUrl(`${apiBaseUrl}/rss?url=https://techcrunch.com/feed/`, 16)}
+                      {truncateUrl(`${apiBaseUrl}/rss?url=https://techcrunch.com/feed/`)}
                     </span>
                     <span className="sm:hidden">
                       {truncateUrl(
-                        `${apiBaseUrl}/rss?url=https://techcrunch.com/feed/`
+                        `${apiBaseUrl}/rss?url=https://techcrunch.com/feed/`, 16
                       )}
                     </span>
                   </pre>
