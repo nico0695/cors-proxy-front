@@ -9,6 +9,10 @@ import type {
   PublicUser,
   CreateUserDto,
   UpdateUserDto,
+  ProxyEndpoint,
+  CreateProxyEndpointDto,
+  UpdateProxyEndpointDto,
+  ProxyStats,
 } from "./types";
 import {
   getAccessToken,
@@ -283,5 +287,71 @@ export const api = {
   getStats: async (): Promise<ApiStats> => {
     const res = await authorizedFetch(`${API_BASE}/api-mock/stats`);
     return handleResponse<ApiStats>(res);
+  },
+
+  // Proxy endpoint endpoints
+  getProxyEndpoints: async (): Promise<ProxyEndpoint[]> => {
+    const res = await authorizedFetch(`${API_BASE}/api-proxy/endpoints`);
+    return handleResponse<ProxyEndpoint[]>(res);
+  },
+
+  getProxyEndpoint: async (id: string): Promise<ProxyEndpoint> => {
+    const res = await authorizedFetch(`${API_BASE}/api-proxy/endpoints/${id}`);
+    return handleResponse<ProxyEndpoint>(res);
+  },
+
+  createProxyEndpoint: async (
+    data: CreateProxyEndpointDto
+  ): Promise<ProxyEndpoint> => {
+    const res = await authorizedFetch(`${API_BASE}/api-proxy/endpoints`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+    return handleResponse<ProxyEndpoint>(res);
+  },
+
+  updateProxyEndpoint: async (
+    id: string,
+    data: UpdateProxyEndpointDto
+  ): Promise<ProxyEndpoint> => {
+    const res = await authorizedFetch(`${API_BASE}/api-proxy/endpoints/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+    return handleResponse<ProxyEndpoint>(res);
+  },
+
+  deleteProxyEndpoint: async (id: string): Promise<void> => {
+    const res = await authorizedFetch(`${API_BASE}/api-proxy/endpoints/${id}`, {
+      method: "DELETE",
+    });
+    if (!res.ok) {
+      let errorMessage = `HTTP error! status: ${res.status}`;
+      try {
+        const responseText = await res.text();
+        if (responseText) {
+          try {
+            const errorData = JSON.parse(responseText);
+            if (errorData.error) {
+              errorMessage = errorData.error;
+            } else if (errorData.message) {
+              errorMessage = errorData.message;
+            }
+          } catch {
+            errorMessage = responseText;
+          }
+        }
+      } catch (error) {
+        console.error("Failed to read error response:", error);
+      }
+      throw new Error(errorMessage);
+    }
+  },
+
+  getProxyStats: async (): Promise<ProxyStats> => {
+    const res = await authorizedFetch(`${API_BASE}/api-proxy/stats`);
+    return handleResponse<ProxyStats>(res);
   },
 };
