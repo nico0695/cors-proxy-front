@@ -3,6 +3,9 @@ import { z } from "zod";
 // Maximum delay: 1 minute (60000ms) to prevent blocking backend
 export const MAX_DELAY_MS = 60000;
 
+// Maximum delay for proxy: 10 seconds (10000ms)
+export const MAX_PROXY_DELAY_MS = 10000;
+
 export const createEndpointSchema = z.object({
   name: z.string().min(1, "Name is required").max(100, "Name is too long"),
   path: z
@@ -62,3 +65,25 @@ export const updateUserSchema = z.object({
 
 export type CreateUserFormData = z.infer<typeof createUserSchema>;
 export type UpdateUserFormData = z.infer<typeof updateUserSchema>;
+
+// Proxy endpoint schemas
+export const createProxyEndpointSchema = z.object({
+  name: z.string().min(1, "Name is required").max(100, "Name is too long"),
+  path: z
+    .string()
+    .min(1, "Path is required")
+    .regex(/^\//, "Path must start with /"),
+  baseUrl: z
+    .string()
+    .min(1, "Base URL is required")
+    .regex(/^https?:\/\//, "Base URL must start with http:// or https://"),
+  groupId: z.string().optional(),
+  statusCodeOverride: z.number().int().min(100).max(599).optional(),
+  enabled: z.boolean().default(true),
+  delayMs: z.number().int().min(0).max(MAX_PROXY_DELAY_MS).default(0),
+});
+
+export const updateProxyEndpointSchema = createProxyEndpointSchema.partial();
+
+export type CreateProxyEndpointFormData = z.infer<typeof createProxyEndpointSchema>;
+export type UpdateProxyEndpointFormData = z.infer<typeof updateProxyEndpointSchema>;
