@@ -44,12 +44,14 @@ export interface ApiStats {
 
 // Auth types
 export type UserStatus = "enabled" | "blocked";
+export type UserRole = "admin" | "user";
 
 export interface PublicUser {
   id: string;
   name: string;
   email?: string;
   status: UserStatus;
+  role: UserRole;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -81,6 +83,7 @@ export interface CreateUserDto {
   password: string;
   email?: string;
   status?: UserStatus;
+  role?: UserRole;
 }
 
 export interface UpdateUserDto {
@@ -88,6 +91,7 @@ export interface UpdateUserDto {
   password?: string;
   email?: string;
   status?: UserStatus;
+  role?: UserRole;
 }
 
 // Proxy endpoint types

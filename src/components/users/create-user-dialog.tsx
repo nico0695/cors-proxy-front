@@ -33,12 +33,17 @@ export function CreateUserDialog({ open, onOpenChange }: CreateUserDialogProps) 
     formState: { errors },
     reset,
     setValue,
+    watch,
   } = useForm<CreateUserFormData>({
     resolver: zodResolver(createUserSchema),
     defaultValues: {
       status: "enabled",
+      role: "user",
     },
   });
+
+  const statusValue = watch("status");
+  const roleValue = watch("role");
 
   const onSubmit = async (data: CreateUserFormData) => {
     await createUser.mutateAsync({
@@ -46,6 +51,7 @@ export function CreateUserDialog({ open, onOpenChange }: CreateUserDialogProps) 
       password: data.password,
       email: data.email || undefined,
       status: data.status,
+      role: data.role,
     });
     reset();
     onOpenChange(false);
@@ -109,7 +115,7 @@ export function CreateUserDialog({ open, onOpenChange }: CreateUserDialogProps) 
           <div className="space-y-2">
             <Label htmlFor="status">Status</Label>
             <Select
-              defaultValue="enabled"
+              value={statusValue}
               onValueChange={(value) => setValue("status", value as "enabled" | "blocked")}
               disabled={createUser.isPending}
             >
@@ -119,6 +125,23 @@ export function CreateUserDialog({ open, onOpenChange }: CreateUserDialogProps) 
               <SelectContent>
                 <SelectItem value="enabled">Enabled</SelectItem>
                 <SelectItem value="blocked">Blocked</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="role">Role</Label>
+            <Select
+              value={roleValue}
+              onValueChange={(value) => setValue("role", value as "admin" | "user")}
+              disabled={createUser.isPending}
+            >
+              <SelectTrigger id="role">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="user">User</SelectItem>
+                <SelectItem value="admin">Admin</SelectItem>
               </SelectContent>
             </Select>
           </div>

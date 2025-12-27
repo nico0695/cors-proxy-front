@@ -54,13 +54,15 @@ export const createUserSchema = z.object({
   password: z.string().min(6, "Password must be at least 6 characters").max(100, "Password is too long"),
   email: z.string().email("Invalid email").optional().or(z.literal("")),
   status: z.enum(["enabled", "blocked"]).default("enabled"),
+  role: z.enum(["admin", "user"]).default("user"),
 });
 
 export const updateUserSchema = z.object({
   name: z.string().min(3, "Username must be at least 3 characters").max(50, "Username is too long").optional(),
-  password: z.string().min(6, "Password must be at least 6 characters").max(100, "Password is too long").optional(),
+  password: z.string().min(6, "Password must be at least 6 characters").max(100, "Password is too long").optional().or(z.literal("")),
   email: z.string().email("Invalid email").optional().or(z.literal("")),
   status: z.enum(["enabled", "blocked"]).optional(),
+  role: z.enum(["admin", "user"]).optional(),
 });
 
 export type CreateUserFormData = z.infer<typeof createUserSchema>;

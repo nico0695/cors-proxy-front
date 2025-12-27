@@ -35,15 +35,20 @@ export function EditUserDialog({ user, open, onOpenChange }: EditUserDialogProps
     formState: { errors },
     reset,
     setValue,
+    watch,
   } = useForm<UpdateUserFormData>({
     resolver: zodResolver(updateUserSchema),
   });
+
+  const statusValue = watch("status");
+  const roleValue = watch("role");
 
   useEffect(() => {
     if (user) {
       setValue("name", user.name);
       setValue("email", user.email || "");
       setValue("status", user.status);
+      setValue("role", user.role);
       setValue("password", "");
     }
   }, [user, setValue]);
@@ -55,9 +60,9 @@ export function EditUserDialog({ user, open, onOpenChange }: EditUserDialogProps
       name: data.name,
       email: data.email || undefined,
       status: data.status,
+      role: data.role,
     };
 
-    // Only include password if it was changed
     if (data.password) {
       updateData.password = data.password;
     }
@@ -128,7 +133,7 @@ export function EditUserDialog({ user, open, onOpenChange }: EditUserDialogProps
           <div className="space-y-2">
             <Label htmlFor="edit-status">Status</Label>
             <Select
-              value={user?.status}
+              value={statusValue}
               onValueChange={(value) => setValue("status", value as "enabled" | "blocked")}
               disabled={updateUser.isPending}
             >
@@ -138,6 +143,23 @@ export function EditUserDialog({ user, open, onOpenChange }: EditUserDialogProps
               <SelectContent>
                 <SelectItem value="enabled">Enabled</SelectItem>
                 <SelectItem value="blocked">Blocked</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="edit-role">Role</Label>
+            <Select
+              value={roleValue}
+              onValueChange={(value) => setValue("role", value as "admin" | "user")}
+              disabled={updateUser.isPending}
+            >
+              <SelectTrigger id="edit-role">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="user">User</SelectItem>
+                <SelectItem value="admin">Admin</SelectItem>
               </SelectContent>
             </Select>
           </div>
