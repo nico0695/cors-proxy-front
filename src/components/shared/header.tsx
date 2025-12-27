@@ -5,14 +5,12 @@ import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { LogOut, User, Rss, Database, Network, Users } from "lucide-react";
 import { RssDocsDialog } from "./rss-docs-dialog";
+import { NavButton } from "./nav-button";
 import { useState } from "react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
 
 export function Header() {
   const { user, logout } = useAuth();
   const [rssDocsOpen, setRssDocsOpen] = useState(false);
-  const pathname = usePathname();
 
   return (
     <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -29,36 +27,8 @@ export function Header() {
           </div>
 
           <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              asChild
-              className={
-                pathname === "/"
-                  ? "border-blue-500 bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300"
-                  : "border-blue-500 text-blue-600 hover:bg-blue-50 hover:text-blue-700 dark:border-blue-400 dark:text-blue-400 dark:hover:bg-blue-950 dark:hover:text-blue-300"
-              }
-            >
-              <Link href="/" className="flex items-center">
-                <Database className="h-4 w-4 sm:mr-2" />
-                <span className="hidden sm:inline">Mock APIs</span>
-              </Link>
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              asChild
-              className={
-                pathname === "/proxy"
-                  ? "border-blue-500 bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300"
-                  : "border-blue-500 text-blue-600 hover:bg-blue-50 hover:text-blue-700 dark:border-blue-400 dark:text-blue-400 dark:hover:bg-blue-950 dark:hover:text-blue-300"
-              }
-            >
-              <Link href="/proxy" className="flex items-center">
-                <Network className="h-4 w-4 sm:mr-2" />
-                <span className="hidden sm:inline">HTTP Proxy</span>
-              </Link>
-            </Button>
+            <NavButton href="/" icon={Database} label="Mock APIs" color="blue" />
+            <NavButton href="/proxy" icon={Network} label="HTTP Proxy" color="blue" />
             <Button
               variant="outline"
               size="sm"
@@ -71,21 +41,7 @@ export function Header() {
               </div>
             </Button>
             {user?.role === "admin" && (
-              <Button
-                variant="outline"
-                size="sm"
-                asChild
-                className={
-                  pathname === "/users"
-                    ? "border-purple-500 bg-purple-50 text-purple-700 dark:bg-purple-950 dark:text-purple-300"
-                    : "border-purple-500 text-purple-600 hover:bg-purple-50 hover:text-purple-700 dark:border-purple-400 dark:text-purple-400 dark:hover:bg-purple-950 dark:hover:text-purple-300"
-                }
-              >
-                <Link href="/users" className="flex items-center">
-                  <Users className="h-4 w-4 sm:mr-2" />
-                  <span className="hidden sm:inline">Users</span>
-                </Link>
-              </Button>
+              <NavButton href="/users" icon={Users} label="Users" color="purple" />
             )}
             <ThemeToggle />
             <Button variant="ghost" size="sm" onClick={logout}>
