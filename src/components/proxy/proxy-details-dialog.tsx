@@ -89,7 +89,25 @@ export function ProxyDetailsDialog({
               </div>
               <div className="col-span-2">
                 <span className="text-muted-foreground">Base URL:</span>
-                <p className="font-mono text-xs break-all">{endpoint.baseUrl}</p>
+                <p className="font-mono text-xs break-all">
+                  {endpoint.baseUrl || (
+                    <span className="italic text-muted-foreground">
+                      Dynamic mode - requires ?url= parameter
+                    </span>
+                  )}
+                </p>
+              </div>
+              <div>
+                <span className="text-muted-foreground">Cache:</span>
+                <p>
+                  {endpoint.useCache ? (
+                    <Badge variant="outline" className="border-green-500 text-green-600 dark:border-green-400 dark:text-green-400">
+                      Enabled (5 min TTL)
+                    </Badge>
+                  ) : (
+                    <span className="text-muted-foreground">Disabled</span>
+                  )}
+                </p>
               </div>
               {endpoint.statusCodeOverride && (
                 <div className="col-span-2">
