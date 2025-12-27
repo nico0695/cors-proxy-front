@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ProtectedRoute } from "@/components/auth/protected";
+import { AdminOnly } from "@/components/auth/admin-only";
 import { Header } from "@/components/shared/header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -30,7 +30,7 @@ export default function UsersPage() {
   };
 
   return (
-    <ProtectedRoute>
+    <AdminOnly>
       <main className="min-h-screen bg-background">
         <Header />
 
@@ -74,6 +74,7 @@ export default function UsersPage() {
                         <th className="text-left py-3 px-4 font-medium">Username</th>
                         <th className="text-left py-3 px-4 font-medium">Email</th>
                         <th className="text-left py-3 px-4 font-medium">Status</th>
+                        <th className="text-left py-3 px-4 font-medium">Role</th>
                         <th className="text-left py-3 px-4 font-medium">Created</th>
                         <th className="text-right py-3 px-4 font-medium">Actions</th>
                       </tr>
@@ -102,6 +103,17 @@ export default function UsersPage() {
                                 {user.status === "enabled" ? "Enabled" : "Blocked"}
                               </span>
                             </div>
+                          </td>
+                          <td className="py-3 px-4">
+                            <span
+                              className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                                user.role === "admin"
+                                  ? "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200"
+                                  : "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
+                              }`}
+                            >
+                              {user.role === "admin" ? "Admin" : "User"}
+                            </span>
                           </td>
                           <td className="py-3 px-4 text-sm text-muted-foreground">
                             {format(new Date(user.createdAt), "MMM d, yyyy")}
@@ -146,6 +158,6 @@ export default function UsersPage() {
           onOpenChange={(open) => !open && setDeletingUser(null)}
         />
       </main>
-    </ProtectedRoute>
+    </AdminOnly>
   );
 }

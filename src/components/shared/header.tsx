@@ -3,7 +3,7 @@
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
-import { LogOut, User, Rss, Database, Network } from "lucide-react";
+import { LogOut, User, Rss, Database, Network, Users } from "lucide-react";
 import { RssDocsDialog } from "./rss-docs-dialog";
 import { useState } from "react";
 import Link from "next/link";
@@ -24,7 +24,7 @@ export function Header() {
             </div>
             <div className="flex flex-col">
               <span className="text-sm font-medium">{user?.name}</span>
-              <span className="text-xs text-muted-foreground">Administrator</span>
+              <span className="text-xs text-muted-foreground capitalize">{user?.role}</span>
             </div>
           </div>
 
@@ -70,6 +70,23 @@ export function Header() {
                 <span className="hidden sm:inline">RSS Docs</span>
               </div>
             </Button>
+            {user?.role === "admin" && (
+              <Button
+                variant="outline"
+                size="sm"
+                asChild
+                className={
+                  pathname === "/users"
+                    ? "border-purple-500 bg-purple-50 text-purple-700 dark:bg-purple-950 dark:text-purple-300"
+                    : "border-purple-500 text-purple-600 hover:bg-purple-50 hover:text-purple-700 dark:border-purple-400 dark:text-purple-400 dark:hover:bg-purple-950 dark:hover:text-purple-300"
+                }
+              >
+                <Link href="/users" className="flex items-center">
+                  <Users className="h-4 w-4 sm:mr-2" />
+                  <span className="hidden sm:inline">Users</span>
+                </Link>
+              </Button>
+            )}
             <ThemeToggle />
             <Button variant="ghost" size="sm" onClick={logout}>
               <LogOut className="h-4 w-4 mr-2" />
