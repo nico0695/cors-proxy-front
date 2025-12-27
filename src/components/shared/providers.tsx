@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Toaster } from "react-hot-toast";
 import { ThemeProvider } from "next-themes";
 import { AuthProvider } from "@/hooks/use-auth";
+import { NavigationProgress } from "./navigation-progress";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(
@@ -53,6 +54,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
               },
             }}
           />
+          <NavigationProgress />
           {children}
         </AuthProvider>
       </QueryClientProvider>
