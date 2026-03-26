@@ -13,18 +13,25 @@ import type {
   CreateProxyEndpointDto,
   UpdateProxyEndpointDto,
   ProxyStats,
-} from "./types";
+  CrudTable,
+  CreateCrudTableDto,
+  UpdateCrudTableDto,
+  CrudStats,
+  CrudEntry,
+  CreateCrudEntryDto,
+  UpdateCrudEntryDto,
+} from './types';
 import {
   getAccessToken,
   getRefreshToken,
   clearSession,
   updateAccessToken,
-} from "./auth";
+} from './auth';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
 
 async function handleResponse<T>(response: Response): Promise<T> {
-  console.log("Response status:", response.status, response.statusText);
+  console.log('Response status:', response.status, response.statusText);
 
   if (!response.ok) {
     // Get response body as text first (can only be read once)
@@ -49,14 +56,14 @@ async function handleResponse<T>(response: Response): Promise<T> {
         }
       }
     } catch (error) {
-      console.error("Failed to read error response:", error);
+      console.error('Failed to read error response:', error);
     }
-    console.error("API Error:", errorMessage);
+    console.error('API Error:', errorMessage);
     throw new Error(errorMessage);
   }
 
   const data = await response.json();
-  console.log("API Response data:", data);
+  console.log('API Response data:', data);
   return data;
 }
 
@@ -66,19 +73,19 @@ async function handleResponse<T>(response: Response): Promise<T> {
 async function refreshAccessToken(): Promise<string> {
   const refreshToken = getRefreshToken();
   if (!refreshToken) {
-    throw new Error("No refresh token available");
+    throw new Error('No refresh token available');
   }
 
   const res = await fetch(`${API_BASE}/api-auth/refresh`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ refreshToken }),
   });
 
   if (!res.ok) {
     clearSession();
     // Try to get error message from response
-    let errorMessage = "Failed to refresh token";
+    let errorMessage = 'Failed to refresh token';
     try {
       const responseText = await res.text();
       if (responseText) {
@@ -105,14 +112,14 @@ async function refreshAccessToken(): Promise<string> {
  */
 async function authorizedFetch(
   url: string,
-  options: RequestInit = {}
+  options: RequestInit = {},
 ): Promise<Response> {
   const token = getAccessToken();
 
   // Attach Authorization header if token exists
   const headers = new Headers(options.headers);
   if (token) {
-    headers.set("Authorization", `Bearer ${token}`);
+    headers.set('Authorization', `Bearer ${token}`);
   }
 
   let response = await fetch(url, {
@@ -126,13 +133,13 @@ async function authorizedFetch(
       const newToken = await refreshAccessToken();
 
       // Retry with new token
-      headers.set("Authorization", `Bearer ${newToken}`);
+      headers.set('Authorization', `Bearer ${newToken}`);
       response = await fetch(url, {
         ...options,
         headers,
       });
     } catch (error) {
-      console.error("Token refresh failed:", error);
+      console.error('Token refresh failed:', error);
       clearSession();
       throw error;
     }
@@ -145,8 +152,8 @@ export const api = {
   // Auth endpoints
   login: async (payload: LoginPayload): Promise<AuthResponse> => {
     const res = await fetch(`${API_BASE}/api-auth/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     });
     return handleResponse<AuthResponse>(res);
@@ -154,8 +161,8 @@ export const api = {
 
   register: async (payload: RegisterPayload): Promise<AuthResponse> => {
     const res = await fetch(`${API_BASE}/api-auth/register`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     });
     return handleResponse<AuthResponse>(res);
@@ -163,8 +170,8 @@ export const api = {
 
   refresh: async (refreshToken: string): Promise<AuthResponse> => {
     const res = await fetch(`${API_BASE}/api-auth/refresh`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ refreshToken }),
     });
     return handleResponse<AuthResponse>(res);
@@ -177,8 +184,8 @@ export const api = {
 
   createUser: async (data: CreateUserDto): Promise<PublicUser> => {
     const res = await authorizedFetch(`${API_BASE}/api-auth/users`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     });
     return handleResponse<PublicUser>(res);
@@ -186,8 +193,8 @@ export const api = {
 
   updateUser: async (id: string, data: UpdateUserDto): Promise<PublicUser> => {
     const res = await authorizedFetch(`${API_BASE}/api-auth/users/${id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     });
     return handleResponse<PublicUser>(res);
@@ -195,7 +202,7 @@ export const api = {
 
   deleteUser: async (id: string): Promise<void> => {
     const res = await authorizedFetch(`${API_BASE}/api-auth/users/${id}`, {
-      method: "DELETE",
+      method: 'DELETE',
     });
     if (!res.ok) {
       let errorMessage = `HTTP error! status: ${res.status}`;
@@ -214,7 +221,7 @@ export const api = {
           }
         }
       } catch (error) {
-        console.error("Failed to read error response:", error);
+        console.error('Failed to read error response:', error);
       }
       throw new Error(errorMessage);
     }
@@ -232,11 +239,11 @@ export const api = {
   },
 
   createEndpoint: async (
-    data: CreateMockEndpointDto
+    data: CreateMockEndpointDto,
   ): Promise<MockEndpoint> => {
     const res = await authorizedFetch(`${API_BASE}/api-mock/endpoints`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     });
     return handleResponse<MockEndpoint>(res);
@@ -244,11 +251,11 @@ export const api = {
 
   updateEndpoint: async (
     id: string,
-    data: UpdateMockEndpointDto
+    data: UpdateMockEndpointDto,
   ): Promise<MockEndpoint> => {
     const res = await authorizedFetch(`${API_BASE}/api-mock/endpoints/${id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     });
     return handleResponse<MockEndpoint>(res);
@@ -256,7 +263,7 @@ export const api = {
 
   deleteEndpoint: async (id: string): Promise<void> => {
     const res = await authorizedFetch(`${API_BASE}/api-mock/endpoints/${id}`, {
-      method: "DELETE",
+      method: 'DELETE',
     });
     if (!res.ok) {
       // Get response body as text first (can only be read once)
@@ -278,7 +285,7 @@ export const api = {
           }
         }
       } catch (error) {
-        console.error("Failed to read error response:", error);
+        console.error('Failed to read error response:', error);
       }
       throw new Error(errorMessage);
     }
@@ -301,11 +308,11 @@ export const api = {
   },
 
   createProxyEndpoint: async (
-    data: CreateProxyEndpointDto
+    data: CreateProxyEndpointDto,
   ): Promise<ProxyEndpoint> => {
     const res = await authorizedFetch(`${API_BASE}/api-proxy/endpoints`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     });
     return handleResponse<ProxyEndpoint>(res);
@@ -313,11 +320,11 @@ export const api = {
 
   updateProxyEndpoint: async (
     id: string,
-    data: UpdateProxyEndpointDto
+    data: UpdateProxyEndpointDto,
   ): Promise<ProxyEndpoint> => {
     const res = await authorizedFetch(`${API_BASE}/api-proxy/endpoints/${id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     });
     return handleResponse<ProxyEndpoint>(res);
@@ -325,7 +332,7 @@ export const api = {
 
   deleteProxyEndpoint: async (id: string): Promise<void> => {
     const res = await authorizedFetch(`${API_BASE}/api-proxy/endpoints/${id}`, {
-      method: "DELETE",
+      method: 'DELETE',
     });
     if (!res.ok) {
       let errorMessage = `HTTP error! status: ${res.status}`;
@@ -344,7 +351,7 @@ export const api = {
           }
         }
       } catch (error) {
-        console.error("Failed to read error response:", error);
+        console.error('Failed to read error response:', error);
       }
       throw new Error(errorMessage);
     }
@@ -353,5 +360,137 @@ export const api = {
   getProxyStats: async (): Promise<ProxyStats> => {
     const res = await authorizedFetch(`${API_BASE}/api-proxy/stats`);
     return handleResponse<ProxyStats>(res);
+  },
+
+  // CRUD table management (authenticated)
+  getCrudTables: async (): Promise<CrudTable[]> => {
+    const res = await authorizedFetch(`${API_BASE}/api-crud/tables`);
+    return handleResponse<CrudTable[]>(res);
+  },
+
+  getCrudTable: async (id: string): Promise<CrudTable> => {
+    const res = await authorizedFetch(`${API_BASE}/api-crud/tables/${id}`);
+    return handleResponse<CrudTable>(res);
+  },
+
+  createCrudTable: async (data: CreateCrudTableDto): Promise<CrudTable> => {
+    const res = await authorizedFetch(`${API_BASE}/api-crud/tables`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    return handleResponse<CrudTable>(res);
+  },
+
+  updateCrudTable: async (
+    id: string,
+    data: UpdateCrudTableDto,
+  ): Promise<CrudTable> => {
+    const res = await authorizedFetch(`${API_BASE}/api-crud/tables/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    return handleResponse<CrudTable>(res);
+  },
+
+  deleteCrudTable: async (id: string): Promise<void> => {
+    const res = await authorizedFetch(`${API_BASE}/api-crud/tables/${id}`, {
+      method: 'DELETE',
+    });
+    if (!res.ok) {
+      let errorMessage = `HTTP error! status: ${res.status}`;
+      try {
+        const responseText = await res.text();
+        if (responseText) {
+          try {
+            const errorData = JSON.parse(responseText);
+            if (errorData.error) errorMessage = errorData.error;
+            else if (errorData.message) errorMessage = errorData.message;
+          } catch {
+            errorMessage = responseText;
+          }
+        }
+      } catch (error) {
+        console.error('Failed to read error response:', error);
+      }
+      throw new Error(errorMessage);
+    }
+  },
+
+  getCrudStats: async (): Promise<CrudStats> => {
+    const res = await authorizedFetch(`${API_BASE}/api-crud/stats`);
+    return handleResponse<CrudStats>(res);
+  },
+
+  // CRUD entry serve endpoints (public — no auth)
+  getCrudEntries: async (basePath: string): Promise<CrudEntry[]> => {
+    const res = await fetch(`${API_BASE}/api-crud/serve/${basePath}`);
+    return handleResponse<CrudEntry[]>(res);
+  },
+
+  createCrudEntry: async (
+    basePath: string,
+    data: CreateCrudEntryDto,
+  ): Promise<CrudEntry> => {
+    const res = await fetch(`${API_BASE}/api-crud/serve/${basePath}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    return handleResponse<CrudEntry>(res);
+  },
+
+  getCrudEntry: async (
+    basePath: string,
+    entryId: string,
+  ): Promise<CrudEntry> => {
+    const res = await fetch(
+      `${API_BASE}/api-crud/serve/${basePath}/${entryId}`,
+    );
+    return handleResponse<CrudEntry>(res);
+  },
+
+  updateCrudEntry: async (
+    basePath: string,
+    entryId: string,
+    data: UpdateCrudEntryDto,
+  ): Promise<CrudEntry> => {
+    const res = await fetch(
+      `${API_BASE}/api-crud/serve/${basePath}/${entryId}`,
+      {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      },
+    );
+    return handleResponse<CrudEntry>(res);
+  },
+
+  deleteCrudEntry: async (basePath: string, entryId: string): Promise<void> => {
+    const res = await fetch(
+      `${API_BASE}/api-crud/serve/${basePath}/${entryId}`,
+      {
+        method: 'DELETE',
+      },
+    );
+    if (!res.ok) {
+      let errorMessage = `HTTP error! status: ${res.status}`;
+      try {
+        const responseText = await res.text();
+        if (responseText) {
+          try {
+            const errorData = JSON.parse(responseText);
+            if (errorData.error) errorMessage = errorData.error;
+            else if (errorData.message) errorMessage = errorData.message;
+          } catch {
+            errorMessage = responseText;
+          }
+        }
+      } catch (error) {
+        console.error('Failed to read error response:', error);
+      }
+      throw new Error(errorMessage);
+    }
   },
 };
