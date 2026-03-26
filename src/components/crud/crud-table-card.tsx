@@ -18,6 +18,7 @@ import {
   ExternalLink,
   Trash2,
   Rows3,
+  BookOpen,
 } from 'lucide-react';
 import {
   useUpdateCrudTable,
@@ -32,12 +33,14 @@ interface CrudTableCardProps {
   table: CrudTable;
   onViewDetails?: (table: CrudTable) => void;
   onEdit?: (table: CrudTable) => void;
+  onApiGuide?: (table: CrudTable) => void;
 }
 
 export function CrudTableCard({
   table,
   onViewDetails,
   onEdit,
+  onApiGuide,
 }: CrudTableCardProps) {
   const updateMutation = useUpdateCrudTable();
   const deleteMutation = useDeleteCrudTable();
@@ -204,15 +207,26 @@ export function CrudTableCard({
             <Trash2 className="h-3 w-3" />
           </Button>
         </div>
-        <Button
-          variant="outline"
-          size="sm"
-          className="h-7 text-xs w-full border-teal-600 text-teal-700 hover:bg-teal-50 hover:text-teal-800 dark:border-teal-500 dark:text-teal-400 dark:hover:bg-teal-950"
-          onClick={() => router.push(`/crud/${table.id}`)}
-        >
-          <Rows3 className="h-3 w-3 mr-2" />
-          Manage Entries
-        </Button>
+        <div className="flex w-full gap-1.5">
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-7 text-xs flex-1 border-teal-600 text-teal-700 hover:bg-teal-50 hover:text-teal-800 dark:border-teal-500 dark:text-teal-400 dark:hover:bg-teal-950"
+            onClick={() => router.push(`/crud/${table.id}`)}
+          >
+            <Rows3 className="h-3 w-3 mr-1.5" />
+            Manage Entries
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-7 text-xs flex-1 border-violet-400 text-violet-700 hover:bg-violet-50 hover:text-violet-800 dark:border-violet-500 dark:text-violet-400 dark:hover:bg-violet-950"
+            onClick={() => onApiGuide?.(table)}
+          >
+            <BookOpen className="h-3 w-3 mr-1.5" />
+            API Guide
+          </Button>
+        </div>
       </CardFooter>
     </Card>
   );

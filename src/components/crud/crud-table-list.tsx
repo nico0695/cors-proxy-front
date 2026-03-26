@@ -5,6 +5,7 @@ import { useCrudTables } from '@/hooks/use-crud-tables';
 import { CrudTableCard } from './crud-table-card';
 import { CrudTableDetailsDialog } from './crud-table-details-dialog';
 import { EditCrudTableDialog } from './edit-crud-table-dialog';
+import { CrudApiGuideSheet } from './crud-api-guide-sheet';
 import { Card, CardContent } from '@/components/ui/card';
 import { CrudTable } from '@/lib/types';
 
@@ -12,6 +13,7 @@ export function CrudTableList() {
   const { data: tables, isLoading, error } = useCrudTables();
   const [selectedTable, setSelectedTable] = useState<CrudTable | null>(null);
   const [editingTable, setEditingTable] = useState<CrudTable | null>(null);
+  const [apiGuideTable, setApiGuideTable] = useState<CrudTable | null>(null);
 
   if (isLoading) {
     return (
@@ -75,6 +77,7 @@ export function CrudTableList() {
             table={table}
             onViewDetails={setSelectedTable}
             onEdit={setEditingTable}
+            onApiGuide={setApiGuideTable}
           />
         ))}
       </div>
@@ -93,6 +96,12 @@ export function CrudTableList() {
         table={editingTable}
         open={!!editingTable}
         onOpenChange={(open) => !open && setEditingTable(null)}
+      />
+
+      <CrudApiGuideSheet
+        table={apiGuideTable}
+        open={!!apiGuideTable}
+        onOpenChange={(open) => !open && setApiGuideTable(null)}
       />
     </>
   );
