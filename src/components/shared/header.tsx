@@ -1,12 +1,20 @@
-"use client";
+'use client';
 
-import { useAuth } from "@/hooks/use-auth";
-import { Button } from "@/components/ui/button";
-import { ThemeToggle } from "@/components/ui/theme-toggle";
-import { LogOut, User, Rss, Database, Network, Users } from "lucide-react";
-import { RssDocsDialog } from "./rss-docs-dialog";
-import { NavButton } from "./nav-button";
-import { useState } from "react";
+import { useAuth } from '@/hooks/use-auth';
+import { Button } from '@/components/ui/button';
+import { ThemeToggle } from '@/components/ui/theme-toggle';
+import {
+  LogOut,
+  User,
+  Rss,
+  Database,
+  Network,
+  Users,
+  Table2,
+} from 'lucide-react';
+import { RssDocsDialog } from './rss-docs-dialog';
+import { NavButton } from './nav-button';
+import { useState } from 'react';
 
 export function Header() {
   const { user, logout } = useAuth();
@@ -22,13 +30,31 @@ export function Header() {
             </div>
             <div className="flex flex-col">
               <span className="text-sm font-medium">{user?.name}</span>
-              <span className="text-xs text-muted-foreground capitalize">{user?.role}</span>
+              <span className="text-xs text-muted-foreground capitalize">
+                {user?.role}
+              </span>
             </div>
           </div>
 
           <div className="flex items-center gap-2">
-            <NavButton href="/" icon={Database} label="Mock APIs" color="blue" />
-            <NavButton href="/proxy" icon={Network} label="HTTP Proxy" color="blue" />
+            <NavButton
+              href="/"
+              icon={Database}
+              label="Mock APIs"
+              color="blue"
+            />
+            <NavButton
+              href="/proxy"
+              icon={Network}
+              label="HTTP Proxy"
+              color="blue"
+            />
+            <NavButton
+              href="/crud"
+              icon={Table2}
+              label="Custom APIs"
+              color="teal"
+            />
             <Button
               variant="outline"
               size="sm"
@@ -40,8 +66,13 @@ export function Header() {
                 <span className="hidden sm:inline">RSS Docs</span>
               </div>
             </Button>
-            {user?.role === "admin" && (
-              <NavButton href="/users" icon={Users} label="Users" color="purple" />
+            {user?.role === 'admin' && (
+              <NavButton
+                href="/users"
+                icon={Users}
+                label="Users"
+                color="purple"
+              />
             )}
             <ThemeToggle />
             <Button variant="ghost" size="sm" onClick={logout}>
