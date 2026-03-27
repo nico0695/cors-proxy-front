@@ -9,6 +9,7 @@ import {
 } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { getApiBaseUrl, joinUrl } from '@/lib/utils';
 import { Copy, Rss } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -18,7 +19,8 @@ interface RssDocsDialogProps {
 }
 
 export function RssDocsDialog({ open, onOpenChange }: RssDocsDialogProps) {
-  const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+  const apiBaseUrl = getApiBaseUrl();
+  const rssUrl = joinUrl(apiBaseUrl, '/rss');
 
   const copyToClipboard = async (text: string) => {
     try {
@@ -85,16 +87,16 @@ export function RssDocsDialog({ open, onOpenChange }: RssDocsDialogProps) {
             <div className="flex items-start sm:items-center gap-2">
               <code className="flex-1 bg-muted px-2 sm:px-3 py-2 rounded text-xs sm:text-sm font-mono break-all sm:break-normal">
                 <span className="hidden sm:inline">
-                  {truncateUrl(`${apiBaseUrl}/rss?url=<feed-url>`)}
+                  {truncateUrl(`${rssUrl}?url=<feed-url>`)}
                 </span>
                 <span className="sm:hidden">
-                  {truncateUrl(`${apiBaseUrl}/rss?url=<feed-url>`, 16)}
+                  {truncateUrl(`${rssUrl}?url=<feed-url>`, 16)}
                 </span>
               </code>
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => copyToClipboard(`${apiBaseUrl}/rss?url=`)}
+                onClick={() => copyToClipboard(`${rssUrl}?url=`)}
                 className="shrink-0"
               >
                 <Copy className="h-3 w-3 sm:h-4 sm:w-4" />
@@ -161,11 +163,11 @@ export function RssDocsDialog({ open, onOpenChange }: RssDocsDialogProps) {
                 <div className="flex items-start gap-1 sm:gap-2">
                   <pre className="flex-1 bg-muted p-2 sm:p-3 rounded text-xs font-mono break-all sm:break-normal">
                     <span className="hidden sm:inline">
-                      {truncateUrl(`${apiBaseUrl}/rss?url=https://feeds.bbci.co.uk/news/rss.xml`)}
+                      {truncateUrl(`${rssUrl}?url=https://feeds.bbci.co.uk/news/rss.xml`)}
                     </span>
                     <span className="sm:hidden">
                       {truncateUrl(
-                        `${apiBaseUrl}/rss?url=https://feeds.bbci.co.uk/news/rss.xml`, 16
+                        `${rssUrl}?url=https://feeds.bbci.co.uk/news/rss.xml`, 16
                       )}
                     </span>
                   </pre>
@@ -174,7 +176,7 @@ export function RssDocsDialog({ open, onOpenChange }: RssDocsDialogProps) {
                     size="sm"
                     onClick={() =>
                       copyToClipboard(
-                        `${apiBaseUrl}/rss?url=https://feeds.bbci.co.uk/news/rss.xml`
+                        `${rssUrl}?url=https://feeds.bbci.co.uk/news/rss.xml`
                       )
                     }
                     className="shrink-0"
@@ -186,11 +188,11 @@ export function RssDocsDialog({ open, onOpenChange }: RssDocsDialogProps) {
                 <div className="flex items-start gap-1 sm:gap-2">
                   <pre className="flex-1 bg-muted p-2 sm:p-3 rounded text-xs font-mono break-all sm:break-normal">
                     <span className="hidden sm:inline">
-                      {truncateUrl(`${apiBaseUrl}/rss?url=https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml`)}
+                      {truncateUrl(`${rssUrl}?url=https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml`)}
                     </span>
                     <span className="sm:hidden">
                       {truncateUrl(
-                        `${apiBaseUrl}/rss?url=https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml`, 16
+                        `${rssUrl}?url=https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml`, 16
                       )}
                     </span>
                   </pre>
@@ -199,7 +201,7 @@ export function RssDocsDialog({ open, onOpenChange }: RssDocsDialogProps) {
                     size="sm"
                     onClick={() =>
                       copyToClipboard(
-                        `${apiBaseUrl}/rss?url=https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml`
+                        `${rssUrl}?url=https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml`
                       )
                     }
                     className="shrink-0"
@@ -211,11 +213,11 @@ export function RssDocsDialog({ open, onOpenChange }: RssDocsDialogProps) {
                 <div className="flex items-start gap-1 sm:gap-2">
                   <pre className="flex-1 bg-muted p-2 sm:p-3 rounded text-xs font-mono break-all sm:break-normal">
                     <span className="hidden sm:inline">
-                      {truncateUrl(`${apiBaseUrl}/rss?url=https://news.ycombinator.com/rss`)}
+                      {truncateUrl(`${rssUrl}?url=https://news.ycombinator.com/rss`)}
                     </span>
                     <span className="sm:hidden">
                       {truncateUrl(
-                        `${apiBaseUrl}/rss?url=https://news.ycombinator.com/rss`, 16
+                        `${rssUrl}?url=https://news.ycombinator.com/rss`, 16
                       )}
                     </span>
                   </pre>
@@ -224,7 +226,7 @@ export function RssDocsDialog({ open, onOpenChange }: RssDocsDialogProps) {
                     size="sm"
                     onClick={() =>
                       copyToClipboard(
-                        `${apiBaseUrl}/rss?url=https://news.ycombinator.com/rss`
+                        `${rssUrl}?url=https://news.ycombinator.com/rss`
                       )
                     }
                     className="shrink-0"
@@ -236,11 +238,11 @@ export function RssDocsDialog({ open, onOpenChange }: RssDocsDialogProps) {
                 <div className="flex items-start gap-1 sm:gap-2">
                   <pre className="flex-1 bg-muted p-2 sm:p-3 rounded text-xs font-mono break-all sm:break-normal">
                     <span className="hidden sm:inline">
-                      {truncateUrl(`${apiBaseUrl}/rss?url=https://www.reddit.com/r/programming/.rss`)}
+                      {truncateUrl(`${rssUrl}?url=https://www.reddit.com/r/programming/.rss`)}
                     </span>
                     <span className="sm:hidden">
                       {truncateUrl(
-                        `${apiBaseUrl}/rss?url=https://www.reddit.com/r/programming/.rss`, 16
+                        `${rssUrl}?url=https://www.reddit.com/r/programming/.rss`, 16
                       )}
                     </span>
                   </pre>
@@ -249,7 +251,7 @@ export function RssDocsDialog({ open, onOpenChange }: RssDocsDialogProps) {
                     size="sm"
                     onClick={() =>
                       copyToClipboard(
-                        `${apiBaseUrl}/rss?url=https://www.reddit.com/r/programming/.rss`
+                        `${rssUrl}?url=https://www.reddit.com/r/programming/.rss`
                       )
                     }
                     className="shrink-0"
@@ -261,11 +263,11 @@ export function RssDocsDialog({ open, onOpenChange }: RssDocsDialogProps) {
                 <div className="flex items-start gap-1 sm:gap-2">
                   <pre className="flex-1 bg-muted p-2 sm:p-3 rounded text-xs font-mono break-all sm:break-normal">
                     <span className="hidden sm:inline">
-                      {truncateUrl(`${apiBaseUrl}/rss?url=https://techcrunch.com/feed/`)}
+                      {truncateUrl(`${rssUrl}?url=https://techcrunch.com/feed/`)}
                     </span>
                     <span className="sm:hidden">
                       {truncateUrl(
-                        `${apiBaseUrl}/rss?url=https://techcrunch.com/feed/`, 16
+                        `${rssUrl}?url=https://techcrunch.com/feed/`, 16
                       )}
                     </span>
                   </pre>
@@ -274,7 +276,7 @@ export function RssDocsDialog({ open, onOpenChange }: RssDocsDialogProps) {
                     size="sm"
                     onClick={() =>
                       copyToClipboard(
-                        `${apiBaseUrl}/rss?url=https://techcrunch.com/feed/`
+                        `${rssUrl}?url=https://techcrunch.com/feed/`
                       )
                     }
                     className="shrink-0"

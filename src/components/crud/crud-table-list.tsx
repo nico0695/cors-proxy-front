@@ -8,9 +8,11 @@ import { EditCrudTableDialog } from './edit-crud-table-dialog';
 import { CrudApiGuideSheet } from './crud-api-guide-sheet';
 import { Card, CardContent } from '@/components/ui/card';
 import { CrudTable } from '@/lib/types';
+import { getApiBaseUrl } from '@/lib/utils';
 
 export function CrudTableList() {
   const { data: tables, isLoading, error } = useCrudTables();
+  const apiBaseUrl = getApiBaseUrl();
   const [selectedTable, setSelectedTable] = useState<CrudTable | null>(null);
   const [editingTable, setEditingTable] = useState<CrudTable | null>(null);
   const [apiGuideTable, setApiGuideTable] = useState<CrudTable | null>(null);
@@ -42,7 +44,7 @@ export function CrudTableList() {
             <p className="text-sm text-muted-foreground">
               Make sure the API server is running at{' '}
               <code className="bg-muted px-2 py-1 rounded">
-                {process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'}
+                {apiBaseUrl}
               </code>
             </p>
           </div>

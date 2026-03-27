@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { getApiBaseUrl, joinUrl } from "@/lib/utils";
 import { Clock, Code, Power, PowerOff, Edit, Copy, ExternalLink, Trash2, Database } from "lucide-react";
 import { useUpdateProxyEndpoint, useDeleteProxyEndpoint } from "@/hooks/use-proxy-endpoints";
 import { useState } from "react";
@@ -26,8 +27,8 @@ export function ProxyCard({ endpoint, onViewDetails, onEdit }: ProxyCardProps) {
   const deleteMutation = useDeleteProxyEndpoint();
   const [copied, setCopied] = useState(false);
 
-  const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
-  const fullUrl = `${apiBaseUrl}/api-proxy/serve${endpoint.path}`;
+  const apiBaseUrl = getApiBaseUrl();
+  const fullUrl = joinUrl(apiBaseUrl, `/api-proxy/serve${endpoint.path}`);
 
   const toggleEnabled = () => {
     updateMutation.mutate(

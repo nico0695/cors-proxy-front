@@ -32,6 +32,7 @@ import { useUpdateCrudTable } from '@/hooks/use-crud-tables';
 import { crudEntryKeys } from '@/hooks/use-crud-tables';
 import { api } from '@/lib/api';
 import { CrudTable } from '@/lib/types';
+import { getApiBaseUrl, joinUrl } from '@/lib/utils';
 import { AlertCircle, Loader2, Plus, Trash2 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 
@@ -48,7 +49,7 @@ const FIELD_TYPES = [
   { value: 'date', label: 'Date' },
 ];
 
-const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+const apiBaseUrl = getApiBaseUrl();
 
 export function EditCrudTableDialog({
   table,
@@ -145,7 +146,7 @@ export function EditCrudTableDialog({
             <p className="text-xs text-muted-foreground">
               Serve URL:{' '}
               <code className="bg-muted px-1 rounded">
-                {apiBaseUrl}/api-crud/serve/{basePath || '…'}
+                {joinUrl(apiBaseUrl, `/api-crud/serve/${basePath || '…'}`)}
               </code>
             </p>
             {errors.basePath && (

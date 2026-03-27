@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { getApiBaseUrl, joinUrl } from "@/lib/utils";
 import { Copy, ExternalLink, Edit } from "lucide-react";
 import { format } from "date-fns";
 import toast from "react-hot-toast";
@@ -39,8 +40,8 @@ export function EndpointDetailsDialog({
     }
   };
 
-  const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
-  const fullUrl = `${apiBaseUrl}/api-mock/serve${endpoint.path}`;
+  const apiBaseUrl = getApiBaseUrl();
+  const fullUrl = joinUrl(apiBaseUrl, `/api-mock/serve${endpoint.path}`);
 
   const formatResponseData = () => {
     if (endpoint.contentType === "application/json") {

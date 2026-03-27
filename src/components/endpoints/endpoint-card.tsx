@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { getApiBaseUrl, joinUrl } from "@/lib/utils";
 import { Clock, Code, Power, PowerOff, Edit, Copy, ExternalLink, Trash2 } from "lucide-react";
 import { useUpdateEndpoint, useDeleteEndpoint } from "@/hooks/use-endpoints";
 import { useState } from "react";
@@ -26,8 +27,8 @@ export function EndpointCard({ endpoint, onViewDetails, onEdit }: EndpointCardPr
   const deleteMutation = useDeleteEndpoint();
   const [copied, setCopied] = useState(false);
 
-  const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
-  const fullUrl = `${apiBaseUrl}/api-mock/serve${endpoint.path}`;
+  const apiBaseUrl = getApiBaseUrl();
+  const fullUrl = joinUrl(apiBaseUrl, `/api-mock/serve${endpoint.path}`);
 
   const toggleEnabled = () => {
     updateMutation.mutate(

@@ -12,6 +12,7 @@ import { Badge } from '@/components/ui/badge';
 import { Copy, Edit, ExternalLink, CheckCircle, XCircle } from 'lucide-react';
 import { CrudTable } from '@/lib/types';
 import { useAuth } from '@/hooks/use-auth';
+import { getApiBaseUrl, joinUrl } from '@/lib/utils';
 import { format } from 'date-fns';
 import toast from 'react-hot-toast';
 
@@ -22,7 +23,7 @@ interface CrudTableDetailsDialogProps {
   onEdit?: (table: CrudTable) => void;
 }
 
-const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+const apiBaseUrl = getApiBaseUrl();
 
 export function CrudTableDetailsDialog({
   table,
@@ -36,7 +37,7 @@ export function CrudTableDetailsDialog({
 
   if (!table) return null;
 
-  const serveUrl = `${apiBaseUrl}/api-crud/serve/${table.basePath}`;
+  const serveUrl = joinUrl(apiBaseUrl, `/api-crud/serve/${table.basePath}`);
 
   const copyToClipboard = async (text: string, type: 'url' | 'id') => {
     try {
