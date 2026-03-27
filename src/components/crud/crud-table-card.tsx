@@ -25,6 +25,7 @@ import {
   useDeleteCrudTable,
 } from '@/hooks/use-crud-tables';
 import { useAuth } from '@/hooks/use-auth';
+import { getApiBaseUrl, joinUrl } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
@@ -48,8 +49,8 @@ export function CrudTableCard({
   const router = useRouter();
   const [copied, setCopied] = useState(false);
 
-  const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
-  const serveUrl = `${apiBaseUrl}/api-crud/serve/${table.basePath}`;
+  const apiBaseUrl = getApiBaseUrl();
+  const serveUrl = joinUrl(apiBaseUrl, `/api-crud/serve/${table.basePath}`);
 
   const toggleEnabled = () => {
     updateMutation.mutate(

@@ -7,9 +7,11 @@ import { EndpointDetailsDialog } from "./endpoint-details-dialog";
 import { EditEndpointDialog } from "./edit-endpoint-dialog";
 import { Card, CardContent } from "@/components/ui/card";
 import { MockEndpoint } from "@/lib/types";
+import { getApiBaseUrl } from "@/lib/utils";
 
 export function EndpointList() {
   const { data: endpoints, isLoading, error } = useEndpoints();
+  const apiBaseUrl = getApiBaseUrl();
   const [selectedEndpoint, setSelectedEndpoint] = useState<MockEndpoint | null>(null);
   const [editingEndpoint, setEditingEndpoint] = useState<MockEndpoint | null>(null);
 
@@ -44,7 +46,7 @@ export function EndpointList() {
             <p className="text-sm text-muted-foreground">
               Make sure the API server is running at{" "}
               <code className="bg-muted px-2 py-1 rounded">
-                {process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080"}
+                {apiBaseUrl}
               </code>
             </p>
           </div>

@@ -7,9 +7,11 @@ import { ProxyDetailsDialog } from "./proxy-details-dialog";
 import { EditProxyDialog } from "./edit-proxy-dialog";
 import { Card, CardContent } from "@/components/ui/card";
 import { ProxyEndpoint } from "@/lib/types";
+import { getApiBaseUrl } from "@/lib/utils";
 
 export function ProxyList() {
   const { data: endpoints, isLoading, error } = useProxyEndpoints();
+  const apiBaseUrl = getApiBaseUrl();
   const [selectedEndpoint, setSelectedEndpoint] = useState<ProxyEndpoint | null>(null);
   const [editingEndpoint, setEditingEndpoint] = useState<ProxyEndpoint | null>(null);
 
@@ -40,7 +42,7 @@ export function ProxyList() {
             <p className="text-sm text-muted-foreground">
               Make sure the API server is running at{" "}
               <code className="bg-muted px-2 py-1 rounded">
-                {process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080"}
+                {apiBaseUrl}
               </code>
             </p>
           </div>

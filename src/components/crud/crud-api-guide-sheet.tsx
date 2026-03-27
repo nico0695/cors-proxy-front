@@ -11,7 +11,7 @@ import {
   SheetDescription,
 } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
+import { cn, getApiBaseUrl, joinUrl } from '@/lib/utils';
 import toast from 'react-hot-toast';
 
 interface CrudApiGuideSheetProps {
@@ -36,7 +36,7 @@ const METHOD_COLORS: Record<string, string> = {
 };
 
 function buildEndpoints(baseUrl: string, basePath: string): EndpointDef[] {
-  const base = `${baseUrl}/api-crud/serve/${basePath}`;
+  const base = joinUrl(baseUrl, `/api-crud/serve/${basePath}`);
   return [
     {
       method: 'GET',
@@ -90,10 +90,9 @@ export function CrudApiGuideSheet({
 
   if (!table) return null;
 
-  const apiBaseUrl =
-    process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+  const apiBaseUrl = getApiBaseUrl();
   const endpoints = buildEndpoints(apiBaseUrl, table.basePath);
-  const baseUrl = `${apiBaseUrl}/api-crud/serve/${table.basePath}`;
+  const baseUrl = joinUrl(apiBaseUrl, `/api-crud/serve/${table.basePath}`);
   const sampleBody =
     table.schema.length > 0
       ? JSON.stringify(generateSampleBody(table.schema), null, 2)

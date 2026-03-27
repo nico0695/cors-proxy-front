@@ -27,8 +27,9 @@ import {
   clearSession,
   updateAccessToken,
 } from './auth';
+import { getApiBaseUrl, joinUrl } from './utils';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+const API_BASE = getApiBaseUrl();
 
 async function handleResponse<T>(response: Response): Promise<T> {
   console.log('Response status:', response.status, response.statusText);
@@ -76,7 +77,7 @@ async function refreshAccessToken(): Promise<string> {
     throw new Error('No refresh token available');
   }
 
-  const res = await fetch(`${API_BASE}/api-auth/refresh`, {
+  const res = await fetch(joinUrl(API_BASE, '/api-auth/refresh'), {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ refreshToken }),
@@ -151,7 +152,7 @@ async function authorizedFetch(
 export const api = {
   // Auth endpoints
   login: async (payload: LoginPayload): Promise<AuthResponse> => {
-    const res = await fetch(`${API_BASE}/api-auth/login`, {
+    const res = await fetch(joinUrl(API_BASE, '/api-auth/login'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
@@ -160,7 +161,7 @@ export const api = {
   },
 
   register: async (payload: RegisterPayload): Promise<AuthResponse> => {
-    const res = await fetch(`${API_BASE}/api-auth/register`, {
+    const res = await fetch(joinUrl(API_BASE, '/api-auth/register'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
@@ -169,7 +170,7 @@ export const api = {
   },
 
   refresh: async (refreshToken: string): Promise<AuthResponse> => {
-    const res = await fetch(`${API_BASE}/api-auth/refresh`, {
+    const res = await fetch(joinUrl(API_BASE, '/api-auth/refresh'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ refreshToken }),
@@ -178,12 +179,12 @@ export const api = {
   },
 
   getUsers: async (): Promise<PublicUser[]> => {
-    const res = await authorizedFetch(`${API_BASE}/api-auth/users`);
+    const res = await authorizedFetch(joinUrl(API_BASE, '/api-auth/users'));
     return handleResponse<PublicUser[]>(res);
   },
 
   createUser: async (data: CreateUserDto): Promise<PublicUser> => {
-    const res = await authorizedFetch(`${API_BASE}/api-auth/users`, {
+    const res = await authorizedFetch(joinUrl(API_BASE, '/api-auth/users'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
@@ -192,7 +193,7 @@ export const api = {
   },
 
   updateUser: async (id: string, data: UpdateUserDto): Promise<PublicUser> => {
-    const res = await authorizedFetch(`${API_BASE}/api-auth/users/${id}`, {
+    const res = await authorizedFetch(joinUrl(API_BASE, `/api-auth/users/${id}`), {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
@@ -201,7 +202,7 @@ export const api = {
   },
 
   deleteUser: async (id: string): Promise<void> => {
-    const res = await authorizedFetch(`${API_BASE}/api-auth/users/${id}`, {
+    const res = await authorizedFetch(joinUrl(API_BASE, `/api-auth/users/${id}`), {
       method: 'DELETE',
     });
     if (!res.ok) {
@@ -229,19 +230,21 @@ export const api = {
 
   // Mock endpoint endpoints (using authorizedFetch for future-proofing)
   getEndpoints: async (): Promise<MockEndpoint[]> => {
-    const res = await authorizedFetch(`${API_BASE}/api-mock/endpoints`);
+    const res = await authorizedFetch(joinUrl(API_BASE, '/api-mock/endpoints'));
     return handleResponse<MockEndpoint[]>(res);
   },
 
   getEndpoint: async (id: string): Promise<MockEndpoint> => {
-    const res = await authorizedFetch(`${API_BASE}/api-mock/endpoints/${id}`);
+    const res = await authorizedFetch(
+      joinUrl(API_BASE, `/api-mock/endpoints/${id}`),
+    );
     return handleResponse<MockEndpoint>(res);
   },
 
   createEndpoint: async (
     data: CreateMockEndpointDto,
   ): Promise<MockEndpoint> => {
-    const res = await authorizedFetch(`${API_BASE}/api-mock/endpoints`, {
+    const res = await authorizedFetch(joinUrl(API_BASE, '/api-mock/endpoints'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
@@ -253,18 +256,24 @@ export const api = {
     id: string,
     data: UpdateMockEndpointDto,
   ): Promise<MockEndpoint> => {
-    const res = await authorizedFetch(`${API_BASE}/api-mock/endpoints/${id}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    });
+    const res = await authorizedFetch(
+      joinUrl(API_BASE, `/api-mock/endpoints/${id}`),
+      {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      },
+    );
     return handleResponse<MockEndpoint>(res);
   },
 
   deleteEndpoint: async (id: string): Promise<void> => {
-    const res = await authorizedFetch(`${API_BASE}/api-mock/endpoints/${id}`, {
-      method: 'DELETE',
-    });
+    const res = await authorizedFetch(
+      joinUrl(API_BASE, `/api-mock/endpoints/${id}`),
+      {
+        method: 'DELETE',
+      },
+    );
     if (!res.ok) {
       // Get response body as text first (can only be read once)
       let errorMessage = `HTTP error! status: ${res.status}`;
@@ -292,25 +301,27 @@ export const api = {
   },
 
   getStats: async (): Promise<ApiStats> => {
-    const res = await authorizedFetch(`${API_BASE}/api-mock/stats`);
+    const res = await authorizedFetch(joinUrl(API_BASE, '/api-mock/stats'));
     return handleResponse<ApiStats>(res);
   },
 
   // Proxy endpoint endpoints
   getProxyEndpoints: async (): Promise<ProxyEndpoint[]> => {
-    const res = await authorizedFetch(`${API_BASE}/api-proxy/endpoints`);
+    const res = await authorizedFetch(joinUrl(API_BASE, '/api-proxy/endpoints'));
     return handleResponse<ProxyEndpoint[]>(res);
   },
 
   getProxyEndpoint: async (id: string): Promise<ProxyEndpoint> => {
-    const res = await authorizedFetch(`${API_BASE}/api-proxy/endpoints/${id}`);
+    const res = await authorizedFetch(
+      joinUrl(API_BASE, `/api-proxy/endpoints/${id}`),
+    );
     return handleResponse<ProxyEndpoint>(res);
   },
 
   createProxyEndpoint: async (
     data: CreateProxyEndpointDto,
   ): Promise<ProxyEndpoint> => {
-    const res = await authorizedFetch(`${API_BASE}/api-proxy/endpoints`, {
+    const res = await authorizedFetch(joinUrl(API_BASE, '/api-proxy/endpoints'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
@@ -322,18 +333,24 @@ export const api = {
     id: string,
     data: UpdateProxyEndpointDto,
   ): Promise<ProxyEndpoint> => {
-    const res = await authorizedFetch(`${API_BASE}/api-proxy/endpoints/${id}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    });
+    const res = await authorizedFetch(
+      joinUrl(API_BASE, `/api-proxy/endpoints/${id}`),
+      {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      },
+    );
     return handleResponse<ProxyEndpoint>(res);
   },
 
   deleteProxyEndpoint: async (id: string): Promise<void> => {
-    const res = await authorizedFetch(`${API_BASE}/api-proxy/endpoints/${id}`, {
-      method: 'DELETE',
-    });
+    const res = await authorizedFetch(
+      joinUrl(API_BASE, `/api-proxy/endpoints/${id}`),
+      {
+        method: 'DELETE',
+      },
+    );
     if (!res.ok) {
       let errorMessage = `HTTP error! status: ${res.status}`;
       try {
@@ -358,23 +375,23 @@ export const api = {
   },
 
   getProxyStats: async (): Promise<ProxyStats> => {
-    const res = await authorizedFetch(`${API_BASE}/api-proxy/stats`);
+    const res = await authorizedFetch(joinUrl(API_BASE, '/api-proxy/stats'));
     return handleResponse<ProxyStats>(res);
   },
 
   // CRUD table management (authenticated)
   getCrudTables: async (): Promise<CrudTable[]> => {
-    const res = await authorizedFetch(`${API_BASE}/api-crud/tables`);
+    const res = await authorizedFetch(joinUrl(API_BASE, '/api-crud/tables'));
     return handleResponse<CrudTable[]>(res);
   },
 
   getCrudTable: async (id: string): Promise<CrudTable> => {
-    const res = await authorizedFetch(`${API_BASE}/api-crud/tables/${id}`);
+    const res = await authorizedFetch(joinUrl(API_BASE, `/api-crud/tables/${id}`));
     return handleResponse<CrudTable>(res);
   },
 
   createCrudTable: async (data: CreateCrudTableDto): Promise<CrudTable> => {
-    const res = await authorizedFetch(`${API_BASE}/api-crud/tables`, {
+    const res = await authorizedFetch(joinUrl(API_BASE, '/api-crud/tables'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
@@ -386,7 +403,7 @@ export const api = {
     id: string,
     data: UpdateCrudTableDto,
   ): Promise<CrudTable> => {
-    const res = await authorizedFetch(`${API_BASE}/api-crud/tables/${id}`, {
+    const res = await authorizedFetch(joinUrl(API_BASE, `/api-crud/tables/${id}`), {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
@@ -395,7 +412,7 @@ export const api = {
   },
 
   deleteCrudTable: async (id: string): Promise<void> => {
-    const res = await authorizedFetch(`${API_BASE}/api-crud/tables/${id}`, {
+    const res = await authorizedFetch(joinUrl(API_BASE, `/api-crud/tables/${id}`), {
       method: 'DELETE',
     });
     if (!res.ok) {
@@ -419,13 +436,13 @@ export const api = {
   },
 
   getCrudStats: async (): Promise<CrudStats> => {
-    const res = await authorizedFetch(`${API_BASE}/api-crud/stats`);
+    const res = await authorizedFetch(joinUrl(API_BASE, '/api-crud/stats'));
     return handleResponse<CrudStats>(res);
   },
 
   // CRUD entry serve endpoints (public — no auth)
   getCrudEntries: async (basePath: string): Promise<CrudEntry[]> => {
-    const res = await fetch(`${API_BASE}/api-crud/serve/${basePath}`);
+    const res = await fetch(joinUrl(API_BASE, `/api-crud/serve/${basePath}`));
     return handleResponse<CrudEntry[]>(res);
   },
 
@@ -433,7 +450,7 @@ export const api = {
     basePath: string,
     data: CreateCrudEntryDto,
   ): Promise<CrudEntry> => {
-    const res = await fetch(`${API_BASE}/api-crud/serve/${basePath}`, {
+    const res = await fetch(joinUrl(API_BASE, `/api-crud/serve/${basePath}`), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
@@ -446,7 +463,7 @@ export const api = {
     entryId: string,
   ): Promise<CrudEntry> => {
     const res = await fetch(
-      `${API_BASE}/api-crud/serve/${basePath}/${entryId}`,
+      joinUrl(API_BASE, `/api-crud/serve/${basePath}/${entryId}`),
     );
     return handleResponse<CrudEntry>(res);
   },
@@ -457,7 +474,7 @@ export const api = {
     data: UpdateCrudEntryDto,
   ): Promise<CrudEntry> => {
     const res = await fetch(
-      `${API_BASE}/api-crud/serve/${basePath}/${entryId}`,
+      joinUrl(API_BASE, `/api-crud/serve/${basePath}/${entryId}`),
       {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
@@ -469,7 +486,7 @@ export const api = {
 
   deleteCrudEntry: async (basePath: string, entryId: string): Promise<void> => {
     const res = await fetch(
-      `${API_BASE}/api-crud/serve/${basePath}/${entryId}`,
+      joinUrl(API_BASE, `/api-crud/serve/${basePath}/${entryId}`),
       {
         method: 'DELETE',
       },

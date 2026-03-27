@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/select";
 import { createCrudTableSchema, type CreateCrudTableFormData } from "@/lib/validations";
 import { useCreateCrudTable } from "@/hooks/use-crud-tables";
+import { getApiBaseUrl, joinUrl } from "@/lib/utils";
 import { Loader2, Plus, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
@@ -39,7 +40,7 @@ const FIELD_TYPES = [
   { value: "date", label: "Date" },
 ];
 
-const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
+const apiBaseUrl = getApiBaseUrl();
 
 export function CreateCrudTableDialog({ open, onOpenChange }: CreateCrudTableDialogProps) {
   const createMutation = useCreateCrudTable();
@@ -112,7 +113,7 @@ export function CreateCrudTableDialog({ open, onOpenChange }: CreateCrudTableDia
             <p className="text-xs text-muted-foreground">
               Serve URL:{" "}
               <code className="bg-muted px-1 rounded">
-                {apiBaseUrl}/api-crud/serve/{basePath || "…"}
+                {joinUrl(apiBaseUrl, `/api-crud/serve/${basePath || "…"}`)}
               </code>
             </p>
             {errors.basePath && (
